@@ -22,6 +22,17 @@ Collected internship job descriptions and quick-fit notes for Louis Lau.
 - [docs/xiaomi-top-5.md](./docs/xiaomi-top-5.md)
   Ordered shortlist of the 5 Xiaomi roles currently worth prioritizing.
 
+## Raw Site Exports
+
+- [scripts/scrape_campus_jobs.py](./scripts/scrape_campus_jobs.py)
+  Bulk-export utility for the Alibaba and Ant Group campus job pages.
+- [data/alibaba_positions_100000540002.csv](./data/alibaba_positions_100000540002.csv)
+  Raw Alibaba 2027 internship export from `2026-03-20`.
+- [data/antgroup_positions_26022600074513.csv](./data/antgroup_positions_26022600074513.csv)
+  Raw Ant Group 2027 return-offer internship export from `2026-03-20`.
+- [data/campus_positions_combined.csv](./data/campus_positions_combined.csv)
+  Combined flat export across both sites.
+
 ## Fit legend
 
 - `strong`: worth prioritizing
