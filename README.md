@@ -19,6 +19,8 @@ Collected internship job descriptions and quick-fit notes for Louis Lau.
   Structured notes for Xiaomi postings, including the earlier 3 algorithm roles and the later software-R&D batch.
 - [docs/companies/xiaohongshu.md](./docs/companies/xiaohongshu.md)
   Structured notes for the 2 Xiaohongshu targeted internship roles.
+- [docs/xiaomi-top-5.md](./docs/xiaomi-top-5.md)
+  Ordered shortlist of the 5 Xiaomi roles currently worth prioritizing.
 
 ## Fit legend
 
