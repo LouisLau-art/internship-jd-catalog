@@ -10,6 +10,9 @@ Collected internship job descriptions and quick-fit notes for Louis Lau.
 - Companies covered:
   - `Xiaomi`
   - `Xiaohongshu`
+- Raw export pools captured:
+  - `Alibaba`: `449`
+  - `Ant Group`: `96`
 
 ## What is in this repo
 
@@ -19,6 +22,10 @@ Collected internship job descriptions and quick-fit notes for Louis Lau.
   Structured notes for Xiaomi postings, including the earlier 3 algorithm roles and the later software-R&D batch.
 - [docs/companies/xiaohongshu.md](./docs/companies/xiaohongshu.md)
   Structured notes for the 2 Xiaohongshu targeted internship roles.
+- [docs/companies/alibaba.md](./docs/companies/alibaba.md)
+  Summary note for the Alibaba raw campus export snapshot.
+- [docs/companies/antgroup.md](./docs/companies/antgroup.md)
+  Summary note for the Ant Group raw campus export snapshot.
 - [docs/xiaomi-top-5.md](./docs/xiaomi-top-5.md)
   Ordered shortlist of the 5 Xiaomi roles currently worth prioritizing.
 
@@ -32,6 +39,8 @@ Collected internship job descriptions and quick-fit notes for Louis Lau.
   Raw Ant Group 2027 return-offer internship export from `2026-03-20`.
 - [data/campus_positions_combined.csv](./data/campus_positions_combined.csv)
   Combined flat export across both sites.
+- [data/README.md](./data/README.md)
+  Explains the raw-export layer and its schema.
 
 ## Fit legend
 
@@ -72,3 +81,4 @@ Collected internship job descriptions and quick-fit notes for Louis Lau.
   - `multi-cloud-email-sender`
   - `multi-agent-skills-catalog`
 - It is meant to support application strategy and tailored resume generation, not to store fabricated claims.
+- The raw `data/` exports are intentionally kept separate from the curated root `catalog.csv` so large site dumps do not pollute the reviewed shortlist.
