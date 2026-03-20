@@ -5,8 +5,8 @@ Collected internship job descriptions and quick-fit notes for Louis Lau.
 ## Snapshot
 
 - Current snapshot date: `2026-03-20`
-- Total pasted entries persisted: `30`
-- Unique JD count after de-duplicating one repeated Xiaomi backend posting: `29`
+- Total pasted entries persisted: `29`
+- Unique JD count after de-duplicating one repeated Xiaomi backend posting: `28`
 - Companies covered:
   - `Xiaomi`
   - `Xiaohongshu`

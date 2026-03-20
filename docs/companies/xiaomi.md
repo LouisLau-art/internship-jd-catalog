@@ -5,8 +5,8 @@ Snapshot date: `2026-03-20`
 ## Overview
 
 - Earlier algorithm batch: `3`
-- Later software-R&D batch pasted by user: `25` entries
-- Unique Xiaomi JD count after removing one duplicate posting: `27`
+- Later software-R&D batch pasted by user: `24` entries
+- Unique Xiaomi JD count after removing one duplicate posting: `26`
 
 ## Earlier algorithm batch
 
