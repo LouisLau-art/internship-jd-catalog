@@ -25,6 +25,11 @@ These files are **not** the same thing as the curated `catalog.csv` at the repo 
   - source: Ant Group campus site
   - batch: `26022600074513`
   - exported rows: `96`
+- `bytedance_positions_byteintern_backend.csv` / `.json`
+  - source: ByteDance campus site
+  - project: `ByteIntern`
+  - filter: `category_name == 后端`
+  - exported rows: `558`
 - `huawei_positions_intern.csv` / `.json`
   - source: Huawei campus site
   - page: internship campus portal (`jobType=0`, `jobTypes=0`)
@@ -35,7 +40,7 @@ These files are **not** the same thing as the curated `catalog.csv` at the repo 
   - filter: intent rows whose locations include `武汉` and whose family code is `JFC1`
   - exported rows: `73`
 - `campus_positions_combined.csv` / `.json`
-  - combined exported rows: `703`
+  - combined exported rows: `1261`
 
 ## Flat CSV schema
 
@@ -73,9 +78,10 @@ All CSV exports share the same columns:
 
 ## Intended workflow
 
-1. Refresh raw exports with `scripts/scrape_campus_jobs.py`
-2. Keep raw data in `data/`
-3. Only promote reviewed positions into:
+1. Refresh Alibaba / Ant Group / Huawei exports with `scripts/scrape_campus_jobs.py`
+2. Refresh ByteDance `ByteIntern + 后端` export with `NODE_PATH=/path/to/node_modules bun scripts/scrape_bytedance_jobs.js`
+3. Keep raw data in `data/`
+4. Only promote reviewed positions into:
    - `catalog.csv`
    - `docs/companies/*.md`
    - company-specific top-N shortlist docs

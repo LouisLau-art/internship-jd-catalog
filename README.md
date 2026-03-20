@@ -10,6 +10,7 @@ Collected internship job descriptions and quick-fit notes for Louis Lau.
 - Companies covered:
   - `Alibaba`
   - `Ant Group`
+  - `ByteDance`
   - `OceanBase`
   - `Huawei`
   - `Xiaomi`
@@ -18,6 +19,7 @@ Collected internship job descriptions and quick-fit notes for Louis Lau.
   - `Alibaba`: `455`
   - `Alibaba` daily internship technical filter: `72`
   - `Ant Group`: `96`
+  - `ByteDance` `ByteIntern + 后端`: `558`
   - `Huawei` internship intent rows: `80`
   - `Huawei` Wuhan R&D intent rows: `73`
 
@@ -35,6 +37,8 @@ Collected internship job descriptions and quick-fit notes for Louis Lau.
   Summary note for the Alibaba daily internship technical-role export snapshot.
 - [docs/companies/antgroup.md](./docs/companies/antgroup.md)
   Summary note for the Ant Group raw campus export snapshot.
+- [docs/companies/bytedance.md](./docs/companies/bytedance.md)
+  Summary note for the ByteDance `ByteIntern + 后端` raw export snapshot.
 - [docs/xiaomi-top-5.md](./docs/xiaomi-top-5.md)
   Ordered shortlist of the 5 Xiaomi roles currently worth prioritizing.
 - [docs/alibaba-top-5.md](./docs/alibaba-top-5.md)
@@ -48,12 +52,16 @@ Collected internship job descriptions and quick-fit notes for Louis Lau.
 
 - [scripts/scrape_campus_jobs.py](./scripts/scrape_campus_jobs.py)
   Bulk-export utility for the Alibaba, Ant Group, and Huawei campus job pages.
+- [scripts/scrape_bytedance_jobs.js](./scripts/scrape_bytedance_jobs.js)
+  ByteDance campus export script that bootstraps browser cookies/CSRF via Bun + Playwright, then normalizes the `ByteIntern + 后端` raw pool.
 - [data/alibaba_positions_100000540002.csv](./data/alibaba_positions_100000540002.csv)
   Raw Alibaba 2027 internship export from `2026-03-21`.
 - [data/alibaba_positions_100000560002_tech.csv](./data/alibaba_positions_100000560002_tech.csv)
   Raw Alibaba daily internship technical-role export from `2026-03-21`.
 - [data/antgroup_positions_26022600074513.csv](./data/antgroup_positions_26022600074513.csv)
   Raw Ant Group 2027 return-offer internship export from `2026-03-21`.
+- [data/bytedance_positions_byteintern_backend.csv](./data/bytedance_positions_byteintern_backend.csv)
+  Raw ByteDance `ByteIntern + 后端` export from `2026-03-21`.
 - [data/huawei_positions_intern.csv](./data/huawei_positions_intern.csv)
   Huawei campus internship export expanded to intent-level JDs from `2026-03-21`.
 - [data/huawei_positions_wuhan_rd.csv](./data/huawei_positions_wuhan_rd.csv)
