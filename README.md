@@ -4,15 +4,22 @@ Collected internship job descriptions and quick-fit notes for Louis Lau.
 
 ## Snapshot
 
-- Current snapshot date: `2026-03-20`
-- Total pasted entries persisted: `29`
-- Unique JD count after de-duplicating one repeated Xiaomi backend posting: `28`
+- Current snapshot date: `2026-03-21`
+- Total pasted entries persisted: `34`
+- Unique JD count after de-duplicating one repeated Xiaomi backend posting: `33`
 - Companies covered:
+  - `Alibaba`
+  - `Ant Group`
+  - `OceanBase`
+  - `Huawei`
   - `Xiaomi`
   - `Xiaohongshu`
 - Raw export pools captured:
-  - `Alibaba`: `449`
+  - `Alibaba`: `455`
+  - `Alibaba` daily internship technical filter: `72`
   - `Ant Group`: `96`
+  - `Huawei` internship intent rows: `80`
+  - `Huawei` Wuhan R&D intent rows: `73`
 
 ## What is in this repo
 
@@ -23,7 +30,9 @@ Collected internship job descriptions and quick-fit notes for Louis Lau.
 - [docs/companies/xiaohongshu.md](./docs/companies/xiaohongshu.md)
   Structured notes for the 2 Xiaohongshu targeted internship roles.
 - [docs/companies/alibaba.md](./docs/companies/alibaba.md)
-  Summary note for the Alibaba raw campus export snapshot.
+  Summary note for the Alibaba 2027 internship raw campus export snapshot.
+- [docs/companies/alibaba-daily.md](./docs/companies/alibaba-daily.md)
+  Summary note for the Alibaba daily internship technical-role export snapshot.
 - [docs/companies/antgroup.md](./docs/companies/antgroup.md)
   Summary note for the Ant Group raw campus export snapshot.
 - [docs/xiaomi-top-5.md](./docs/xiaomi-top-5.md)
@@ -32,17 +41,25 @@ Collected internship job descriptions and quick-fit notes for Louis Lau.
   First reviewed shortlist for Alibaba roles from the raw export pool.
 - [docs/antgroup-top-5.md](./docs/antgroup-top-5.md)
   First reviewed shortlist for Ant Group roles from the raw export pool.
+- [docs/daily-intern-top-5.md](./docs/daily-intern-top-5.md)
+  Cross-company shortlist for the 5 highlighted `日常实习` roles.
 
 ## Raw Site Exports
 
 - [scripts/scrape_campus_jobs.py](./scripts/scrape_campus_jobs.py)
-  Bulk-export utility for the Alibaba and Ant Group campus job pages.
+  Bulk-export utility for the Alibaba, Ant Group, and Huawei campus job pages.
 - [data/alibaba_positions_100000540002.csv](./data/alibaba_positions_100000540002.csv)
-  Raw Alibaba 2027 internship export from `2026-03-20`.
+  Raw Alibaba 2027 internship export from `2026-03-21`.
+- [data/alibaba_positions_100000560002_tech.csv](./data/alibaba_positions_100000560002_tech.csv)
+  Raw Alibaba daily internship technical-role export from `2026-03-21`.
 - [data/antgroup_positions_26022600074513.csv](./data/antgroup_positions_26022600074513.csv)
-  Raw Ant Group 2027 return-offer internship export from `2026-03-20`.
+  Raw Ant Group 2027 return-offer internship export from `2026-03-21`.
+- [data/huawei_positions_intern.csv](./data/huawei_positions_intern.csv)
+  Huawei campus internship export expanded to intent-level JDs from `2026-03-21`.
+- [data/huawei_positions_wuhan_rd.csv](./data/huawei_positions_wuhan_rd.csv)
+  Filtered Huawei intent-level export for rows whose locations include `武汉` and whose family code is `JFC1` (`研发类`) from `2026-03-21`.
 - [data/campus_positions_combined.csv](./data/campus_positions_combined.csv)
-  Combined flat export across both sites.
+  Combined flat export across all captured site snapshots.
 - [data/README.md](./data/README.md)
   Explains the raw-export layer and its schema.
 
@@ -58,6 +75,8 @@ Collected internship job descriptions and quick-fit notes for Louis Lau.
 
 ### Priority apply
 
+- OceanBase `AI平台研发实习生`
+- 蚂蚁数字科技 `研发工程师（金融AI）`
 - Xiaohongshu `生态研发工程师实习生`
 - Xiaohongshu `Java 后端开发实习生（AI Agent 方向）`
 - Xiaomi `服务端研发实习生—武汉`
@@ -66,6 +85,7 @@ Collected internship job descriptions and quick-fit notes for Louis Lau.
 
 ### Secondary apply
 
+- 蚂蚁数字科技 `AI PaaS平台开发（训推/知识工程）`
 - Xiaomi `数据理解研发工程师实习生`
 - Xiaomi `效能工具研发工程师实习生`
 - Xiaomi `电商中台软件开发实习生`
@@ -74,6 +94,7 @@ Collected internship job descriptions and quick-fit notes for Louis Lau.
 
 ### Usually avoid
 
+- `Algorithm Engineer Intern for AI Innovation`
 - Foundation model / multimodal pretraining roles
 - Vision generation / 3D / autonomous driving algorithm roles
 - Speech / NLP algorithm roles that explicitly require `PyTorch`, fine-tuning, RLHF, `DeepSpeed`, `Megatron-LM`, or top-tier research output

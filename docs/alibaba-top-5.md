@@ -2,7 +2,7 @@
 
 This shortlist is the first reviewed pass over the Alibaba raw export pool.
 
-- Raw export size: `449`
+- Raw export size: `455`
 - Source file: [data/alibaba_positions_100000540002.csv](../data/alibaba_positions_100000540002.csv)
 
 Ranking logic:

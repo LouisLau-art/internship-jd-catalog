@@ -8,25 +8,24 @@ Snapshot source:
 
 - Source: `Alibaba`
 - Batch ID: `100000540002`
-- Export timestamp: `2026-03-20T02:57:02.049208+00:00`
-- Total exported roles: `449`
+- Export timestamp: `2026-03-20T16:50:01.828577+00:00`
+- Total exported roles: `455`
 
 ## High-level distribution
 
 Top categories:
-- `技术类`: `328`
+- `技术类`: `334`
 - `游戏类`: `43`
 - `运营类`: `31`
 - `产品类`: `12`
 - `设计类`: `12`
 
 Top work locations:
-- `杭州`: `344`
-- `北京`: `235`
-- `上海`: `117`
+- `杭州`: `348`
+- `北京`: `237`
+- `上海`: `116`
 - `广州`: `75`
 - `深圳`: `31`
-- `成都`: `16`
 
 ## How to use this file
 
@@ -40,5 +39,5 @@ Use it to:
 ## Current status
 
 - Raw export captured
-- No manual fit ranking yet
+- First reviewed shortlist available in [docs/alibaba-top-5.md](../alibaba-top-5.md)
 - Not yet merged into the curated shortlist layer

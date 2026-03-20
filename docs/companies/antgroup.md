@@ -8,7 +8,7 @@ Snapshot source:
 
 - Source: `Ant Group`
 - Batch ID: `26022600074513`
-- Export timestamp: `2026-03-20T02:57:02.049208+00:00`
+- Export timestamp: `2026-03-20T16:50:01.828577+00:00`
 - Total exported roles: `96`
 
 ## High-level distribution
@@ -40,5 +40,6 @@ Use it to:
 ## Current status
 
 - Raw export captured
-- No manual fit ranking yet
+- First reviewed shortlist available in [docs/antgroup-top-5.md](../antgroup-top-5.md)
+- Separate daily-internship picks available in [docs/daily-intern-top-5.md](../daily-intern-top-5.md)
 - Not yet merged into the curated shortlist layer

@@ -28,3 +28,8 @@ XM-021,Xiaomi,自动驾驶实习生,武汉,软件研发类,software-batch,avoid,
 XM-022,Xiaomi,仿真测试开发实习生,武汉,软件研发类,software-batch,avoid,"自动驾驶仿真测试场景不匹配"
 XM-023,Xiaomi,测试开发实习—武汉,武汉,软件研发类,software-batch,medium,"Java+SQL+数据清洗+文档，能投但不是最优"
 XM-024,Xiaomi,分布式系统工程师实习生,武汉,软件研发类,software-batch,medium,"开源与搜索生态有加分，但缺ElasticSearch直接经验"
+OB-001,OceanBase,AI平台研发实习生,北京/杭州/西安,AI平台/应用基础设施,daily-picked-2026-03-21,strong,"BaaS+MCP+Skills+RAG+Vibe Coding 叙事与现有 agent/tooling 项目高度匹配"
+ANT-DAILY-001,Ant Group,研发工程师（金融AI）,上海/杭州,应用研发,daily-picked-2026-03-21,strong,"智能体应用+Java/Python 工程化更贴近现有项目证据，适合主投"
+ANT-DAILY-002,Ant Group,AI PaaS平台开发（训推/知识工程）,北京/杭州,AI平台/知识工程,daily-picked-2026-03-21,medium,"平台研发和知识工程方向能对口，但研究生和平台深度要求更高"
+ANT-DAILY-003,Ant Group,隐私保护AI/隐私计算研发工程师,北京/杭州,隐私计算/AI研发,daily-picked-2026-03-21,stretch,"AI 框架经验能沾边，但联邦学习/多方安全计算/隐私保护是明显短板"
+ANT-DAILY-004,Ant Group,Algorithm Engineer Intern for AI Innovation,北京,研究算法,daily-picked-2026-03-21,stretch,"Agentic AI 语义相关，但岗位本质是基础研究实习，PhD/论文/RL 预训练要求更强"

@@ -3,10 +3,15 @@ import unittest
 from scripts.scrape_campus_jobs import (
     build_alibaba_position_url,
     build_ant_position_url,
+    build_huawei_position_url,
     clamp_ant_page_size,
     collect_paginated,
+    filter_jobs_by_category_name,
+    is_huawei_wuhan_rd_job,
     normalize_alibaba_job,
     normalize_ant_job,
+    normalize_huawei_job,
+    resolve_huawei_graduate_item,
 )
 
 
@@ -95,6 +100,85 @@ class NormalizeTests(unittest.TestCase):
         self.assertEqual(normalized["circles"], "阿里巴巴控股集团 | 阿里云")
         self.assertEqual(normalized["circle_codes"], "60000 | 60001")
         self.assertEqual(normalized["channels"], "campus_group_official_site | new_campus_shixiseng_website")
+
+    def test_filter_jobs_by_category_name_keeps_matching_rows(self) -> None:
+        rows = [
+            {"position_id": 1, "category_name": "技术类"},
+            {"position_id": 2, "category_name": "产品类"},
+            {"position_id": 3, "category_name": "技术类"},
+        ]
+
+        filtered = filter_jobs_by_category_name(rows, "技术类")
+
+        self.assertEqual([row["position_id"] for row in filtered], [1, 3])
+        self.assertEqual(filter_jobs_by_category_name(rows, ""), rows)
+
+    def test_resolve_huawei_graduate_item_defaults_to_two(self) -> None:
+        self.assertEqual(
+            resolve_huawei_graduate_item({"jobType": "0", "graduateItem": None}, {"jobType": "0", "graduateItem": None}),
+            "2",
+        )
+        self.assertEqual(
+            resolve_huawei_graduate_item({"jobType": "2", "graduateItem": None}, {"jobType": "2", "graduateItem": None}),
+            "0",
+        )
+
+    def test_normalize_huawei_job_expands_intent_level_record(self) -> None:
+        job = {
+            "jobId": 30860,
+            "dataSource": 1,
+            "jobname": "AI应用工程师",
+            "jobFamClsCode": "JFC1",
+            "positionReqCode": "PO2026031400004",
+        }
+        detail = {
+            "jobId": 30860,
+            "jobRequirementId": 95289,
+            "jobname": "AI应用工程师",
+            "jobArea": "中国/北京,中国/武汉",
+            "jobRequire": "请您详见岗位意向中的岗位要求",
+            "mainBusiness": "请您详见岗位意向中的岗位职责",
+            "jobFamClsCode": "JFC1",
+            "dataSource": 1,
+            "effectiveDate": "2026-03-14T00:00:00.000+0800",
+            "lastUpdateDate": "2026-03-18T16:21:22.000+0800",
+        }
+        intent = {
+            "positionIntentionId": "11311",
+            "positionIntention": "AI系统软件",
+            "jobPlaceName": "中国\\广东\\深圳,中国\\湖北\\武汉",
+            "deptName": "中央软件院,云计算BU",
+            "jobResponsibilities": "1、参与系统设计；<br>2、参与性能调优；<br>",
+            "jobDemand": "1、计算机相关专业；<br>2、熟练运用Python；<br>",
+        }
+
+        normalized = normalize_huawei_job(job, detail, intent)
+
+        self.assertEqual(normalized["source"], "huawei")
+        self.assertEqual(normalized["position_id"], "30860:11311")
+        self.assertEqual(normalized["parent_position_id"], "30860")
+        self.assertEqual(normalized["job_requirement_id"], 95289)
+        self.assertEqual(normalized["position_intention_id"], "11311")
+        self.assertEqual(normalized["position_intention_name"], "AI系统软件")
+        self.assertEqual(normalized["position_name"], "AI应用工程师 - AI系统软件")
+        self.assertEqual(
+            normalized["position_url"],
+            build_huawei_position_url(30860, 1),
+        )
+        self.assertEqual(normalized["work_locations"], "中国/广东/深圳 | 中国/湖北/武汉")
+        self.assertEqual(normalized["departments"], "中央软件院 | 云计算BU")
+        self.assertIn("参与系统设计", normalized["description"])
+        self.assertIn("熟练运用Python", normalized["requirement"])
+
+    def test_is_huawei_wuhan_rd_job_matches_intent_rows(self) -> None:
+        row = {
+            "source": "huawei",
+            "family_code": "JFC1",
+            "work_locations": "中国/广东/深圳 | 中国/湖北/武汉",
+        }
+        self.assertTrue(is_huawei_wuhan_rd_job(row))
+        self.assertFalse(is_huawei_wuhan_rd_job({**row, "family_code": "JFC4"}))
+        self.assertFalse(is_huawei_wuhan_rd_job({**row, "work_locations": "中国/广东/深圳"}))
 
 
 if __name__ == "__main__":
