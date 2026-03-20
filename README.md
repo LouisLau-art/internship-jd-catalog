@@ -28,6 +28,8 @@ Collected internship job descriptions and quick-fit notes for Louis Lau.
   Summary note for the Ant Group raw campus export snapshot.
 - [docs/xiaomi-top-5.md](./docs/xiaomi-top-5.md)
   Ordered shortlist of the 5 Xiaomi roles currently worth prioritizing.
+- [docs/alibaba-ant-top-10.md](./docs/alibaba-ant-top-10.md)
+  First reviewed top-10 shortlist from the Alibaba + Ant raw export pool.
 
 ## Raw Site Exports
 
