@@ -1,13 +1,19 @@
+import json
+import tempfile
 import unittest
+from pathlib import Path
 
 from scripts.scrape_campus_jobs import (
+    build_ant_batch_id_list,
     build_alibaba_position_url,
     build_ant_position_url,
+    build_export_source_entry,
     build_huawei_position_url,
     clamp_ant_page_size,
     collect_paginated,
     filter_jobs_by_category_name,
     is_huawei_wuhan_rd_job,
+    load_maintained_exports,
     normalize_alibaba_job,
     normalize_ant_job,
     normalize_huawei_job,
@@ -35,6 +41,12 @@ class PaginationTests(unittest.TestCase):
 
 
 class NormalizeTests(unittest.TestCase):
+    def test_build_ant_batch_id_list_deduplicates_and_preserves_order(self) -> None:
+        self.assertEqual(
+            build_ant_batch_id_list("26022600074513", "25051200066269,26022600074513,,"),
+            ["26022600074513", "25051200066269"],
+        )
+
     def test_clamp_ant_page_size_caps_large_values(self) -> None:
         self.assertEqual(clamp_ant_page_size(25), 25)
         self.assertEqual(clamp_ant_page_size(100), 40)
@@ -179,6 +191,52 @@ class NormalizeTests(unittest.TestCase):
         self.assertTrue(is_huawei_wuhan_rd_job(row))
         self.assertFalse(is_huawei_wuhan_rd_job({**row, "family_code": "JFC4"}))
         self.assertFalse(is_huawei_wuhan_rd_job({**row, "work_locations": "中国/广东/深圳"}))
+
+    def test_build_export_source_entry_keeps_relevant_metadata(self) -> None:
+        entry = build_export_source_entry(
+            {
+                "source": "bytedance",
+                "company": "ByteDance",
+                "project_id": "7194661644654577981",
+                "project_name": "DailyIntern",
+                "category_name": "后端",
+                "total_count": 123,
+            },
+            "bytedance_positions_dailyintern_backend.json",
+        )
+
+        self.assertEqual(entry["source"], "bytedance")
+        self.assertEqual(entry["file"], "bytedance_positions_dailyintern_backend.json")
+        self.assertEqual(entry["project_name"], "DailyIntern")
+        self.assertEqual(entry["total_count"], 123)
+
+    def test_load_maintained_exports_reads_matching_json_files(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            data_dir = Path(temp_dir)
+            (data_dir / "bytedance_positions_dailyintern_backend.json").write_text(
+                json.dumps(
+                    {
+                        "source": "bytedance",
+                        "company": "ByteDance",
+                        "project_id": "7194661644654577981",
+                        "project_name": "DailyIntern",
+                        "category_name": "后端",
+                        "total_count": 2,
+                        "jobs": [
+                            {"source": "bytedance", "position_id": "1"},
+                            {"source": "bytedance", "position_id": "2"},
+                        ],
+                    }
+                ),
+                encoding="utf-8",
+            )
+            (data_dir / "ignore_me.json").write_text(json.dumps({"jobs": [{"position_id": "3"}]}), encoding="utf-8")
+
+            source_entries, jobs = load_maintained_exports(data_dir, "bytedance_positions_*.json")
+
+        self.assertEqual(len(source_entries), 1)
+        self.assertEqual(source_entries[0]["project_name"], "DailyIntern")
+        self.assertEqual([job["position_id"] for job in jobs], ["1", "2"])
 
 
 if __name__ == "__main__":

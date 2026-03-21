@@ -9,7 +9,7 @@ Snapshot source:
 - Source: `ByteDance`
 - Project: `ByteIntern`
 - Category: `后端`
-- Export timestamp: `2026-03-20T17:13:02.486Z`
+- Export timestamp: `2026-03-21T05:33:11.342311+00:00`
 - Total exported roles: `558`
 
 ## High-level distribution
@@ -37,5 +37,6 @@ Use it to:
 ## Current status
 
 - Raw export captured
+- Separate daily-internship snapshot available in [docs/companies/bytedance-daily.md](./bytedance-daily.md)
 - Not yet promoted into the curated root [catalog.csv](../../catalog.csv)
 - Not yet converted into a reviewed ByteDance shortlist doc

@@ -17,11 +17,13 @@ from urllib.request import HTTPCookieProcessor, Request, build_opener
 
 
 ANT_BATCH_ID = "26022600074513"
+ANT_EXTRA_BATCH_IDS = ("25051200066269",)
 ALI_BATCH_ID = "100000540002"
 ALI_CIRCLE_CODE = "60000"
 ALI_DAILY_BATCH_ID = "100000560002"
 ALI_DAILY_CATEGORY_NAME = "技术类"
 ALI_DAILY_OUTPUT_SUFFIX = "tech"
+BYTEDANCE_EXPORT_GLOB = "bytedance_positions_*.json"
 HUAWEI_JOB_TYPE = "0"
 HUAWEI_JOB_TYPES = "0"
 HUAWEI_LANGUAGE = "zh_CN"
@@ -149,6 +151,19 @@ def normalize_ant_job(job: dict[str, Any]) -> dict[str, Any]:
         "requirement": job.get("requirement", ""),
         "description": job.get("description", ""),
     }
+
+
+def build_ant_batch_id_list(primary_batch_id: str, extra_batch_ids: Any) -> list[str]:
+    batch_ids = [str(primary_batch_id), *split_delimited_values(extra_batch_ids)]
+    ordered: list[str] = []
+    seen: set[str] = set()
+    for batch_id in batch_ids:
+        normalized = str(batch_id).strip()
+        if not normalized or normalized in seen:
+            continue
+        seen.add(normalized)
+        ordered.append(normalized)
+    return ordered
 
 
 def normalize_alibaba_job(job: dict[str, Any]) -> dict[str, Any]:
@@ -491,6 +506,48 @@ def is_huawei_wuhan_rd_job(row: dict[str, Any]) -> bool:
     return row.get("source") == "huawei" and row.get("family_code") == HUAWEI_RD_FAMILY_CODE and "武汉" in row.get("work_locations", "")
 
 
+def build_export_source_entry(payload: dict[str, Any], file_name: str) -> dict[str, Any]:
+    entry = {
+        "source": payload.get("source", ""),
+        "file": file_name,
+    }
+    for key in (
+        "company",
+        "batch_id",
+        "project_id",
+        "project_name",
+        "category_id",
+        "category_name",
+        "circle_code",
+        "job_type",
+        "job_types",
+        "position_card_count",
+        "expanded_intent_count",
+        "source_total_count",
+        "total_count",
+        "generated_at",
+    ):
+        if key in payload and payload.get(key) not in (None, ""):
+            entry[key] = payload.get(key)
+    filters = payload.get("filters")
+    if filters:
+        entry["filters"] = filters
+    return entry
+
+
+def load_maintained_exports(output_dir: Path, glob_pattern: str) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
+    source_entries: list[dict[str, Any]] = []
+    jobs: list[dict[str, Any]] = []
+    for path in sorted(output_dir.glob(glob_pattern)):
+        payload = json.loads(path.read_text(encoding="utf-8"))
+        payload_jobs = payload.get("jobs") or []
+        if not isinstance(payload_jobs, list):
+            raise ValueError(f"jobs payload must be a list in {path}")
+        source_entries.append(build_export_source_entry(payload, path.name))
+        jobs.extend(payload_jobs)
+    return source_entries, jobs
+
+
 def write_csv(path: Path, rows: list[dict[str, Any]]) -> None:
     with path.open("w", encoding="utf-8", newline="") as handle:
         writer = csv.DictWriter(handle, fieldnames=CSV_COLUMNS)
@@ -504,10 +561,16 @@ def write_json(path: Path, payload: dict[str, Any]) -> None:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Scrape Alibaba, Ant Group, and Huawei campus job listings into JSON and CSV.")
+    parser = argparse.ArgumentParser(
+        description=(
+            "Scrape Alibaba, Ant Group, and Huawei campus job listings into JSON and CSV, "
+            "then rebuild the combined export with maintained ByteDance raw snapshots."
+        )
+    )
     parser.add_argument("--output-dir", default="data", help="Directory for exported files.")
     parser.add_argument("--page-size", type=int, default=DEFAULT_PAGE_SIZE, help="Page size for list requests.")
     parser.add_argument("--ant-batch-id", default=ANT_BATCH_ID)
+    parser.add_argument("--ant-extra-batch-ids", default=",".join(ANT_EXTRA_BATCH_IDS))
     parser.add_argument("--ali-batch-id", default=ALI_BATCH_ID)
     parser.add_argument("--ali-circle-code", default=ALI_CIRCLE_CODE)
     parser.add_argument("--ali-daily-batch-id", default=ALI_DAILY_BATCH_ID)
@@ -518,13 +581,36 @@ def main() -> None:
     output_dir = Path(args.output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
 
-    ant_opener, _ = create_cookie_opener()
     ant_page_size = clamp_ant_page_size(args.page_size)
-    ant_jobs_raw, ant_total = collect_paginated(
-        lambda page_index, page_size: fetch_ant_page(page_index, page_size, args.ant_batch_id, ant_opener),
-        page_size=ant_page_size,
-    )
-    ant_jobs = [normalize_ant_job(job) for job in ant_jobs_raw]
+    ant_exports: list[dict[str, Any]] = []
+    ant_jobs: list[dict[str, Any]] = []
+    ant_source_entries: list[dict[str, Any]] = []
+    for ant_batch_id in build_ant_batch_id_list(args.ant_batch_id, args.ant_extra_batch_ids):
+        ant_opener, _ = create_cookie_opener()
+        ant_jobs_raw, ant_total = collect_paginated(
+            lambda page_index, page_size, batch_id=ant_batch_id: fetch_ant_page(page_index, page_size, batch_id, ant_opener),
+            page_size=ant_page_size,
+        )
+        ant_batch_jobs = [normalize_ant_job(job) for job in ant_jobs_raw]
+        ant_jobs.extend(ant_batch_jobs)
+        ant_payload = {
+            "generated_at": "",
+            "source": "antgroup",
+            "company": "Ant Group",
+            "batch_id": ant_batch_id,
+            "total_count": ant_total,
+            "jobs": ant_batch_jobs,
+        }
+        ant_source_entries.append(build_export_source_entry(ant_payload, f"antgroup_positions_{ant_batch_id}.json"))
+        ant_exports.append(
+            {
+                "batch_id": ant_batch_id,
+                "total_count": ant_total,
+                "jobs": ant_batch_jobs,
+                "json_path": output_dir / f"antgroup_positions_{ant_batch_id}.json",
+                "csv_path": output_dir / f"antgroup_positions_{ant_batch_id}.csv",
+            }
+        )
 
     ali_opener, xsrf_token = init_alibaba_session(args.ali_batch_id, args.ali_circle_code)
     ali_jobs_raw, ali_total = collect_paginated(
@@ -569,15 +655,14 @@ def main() -> None:
     )
     huawei_jobs = expand_huawei_jobs(huawei_jobs_raw, huawei_opener)
     huawei_wuhan_rd_jobs = [row for row in huawei_jobs if is_huawei_wuhan_rd_job(row)]
+    bytedance_source_entries, bytedance_jobs = load_maintained_exports(output_dir, BYTEDANCE_EXPORT_GLOB)
 
     generated_at = datetime.now(timezone.utc).isoformat()
     combined = sorted(
-        ali_jobs + ali_daily_jobs + ant_jobs + huawei_jobs,
+        ali_jobs + ali_daily_jobs + ant_jobs + bytedance_jobs + huawei_jobs,
         key=lambda row: (row["source"], str(row.get("batch_id", "")), str(row["position_id"])),
     )
 
-    ant_json = output_dir / f"antgroup_positions_{args.ant_batch_id}.json"
-    ant_csv = output_dir / f"antgroup_positions_{args.ant_batch_id}.csv"
     ali_json = output_dir / f"alibaba_positions_{args.ali_batch_id}.json"
     ali_csv = output_dir / f"alibaba_positions_{args.ali_batch_id}.csv"
     ali_daily_json = output_dir / f"alibaba_positions_{args.ali_daily_batch_id}_{ALI_DAILY_OUTPUT_SUFFIX}.json"
@@ -589,17 +674,19 @@ def main() -> None:
     combined_json = output_dir / "campus_positions_combined.json"
     combined_csv = output_dir / "campus_positions_combined.csv"
 
-    write_json(
-        ant_json,
-        {
-            "generated_at": generated_at,
-            "source": "antgroup",
-            "batch_id": args.ant_batch_id,
-            "total_count": ant_total,
-            "jobs": ant_jobs,
-        },
-    )
-    write_csv(ant_csv, ant_jobs)
+    for ant_export in ant_exports:
+        write_json(
+            ant_export["json_path"],
+            {
+                "generated_at": generated_at,
+                "source": "antgroup",
+                "company": "Ant Group",
+                "batch_id": ant_export["batch_id"],
+                "total_count": ant_export["total_count"],
+                "jobs": ant_export["jobs"],
+            },
+        )
+        write_csv(ant_export["csv_path"], ant_export["jobs"])
 
     write_json(
         ali_json,
@@ -674,7 +761,8 @@ def main() -> None:
                     "total_count": ali_daily_total,
                     "filters": {"category_name": args.ali_daily_category_name},
                 },
-                {"source": "antgroup", "batch_id": args.ant_batch_id, "total_count": ant_total},
+                *ant_source_entries,
+                *bytedance_source_entries,
                 {
                     "source": "huawei",
                     "job_type": HUAWEI_JOB_TYPE,
@@ -694,7 +782,14 @@ def main() -> None:
             "Alibaba daily positions: "
             f"{ali_daily_total} filtered rows from {ali_daily_source_total} total rows"
         )
-    print(f"Ant Group positions: {ant_total}")
+    for ant_export in ant_exports:
+        print(f"Ant Group positions ({ant_export['batch_id']}): {ant_export['total_count']}")
+    for bytedance_source_entry in bytedance_source_entries:
+        print(
+            "ByteDance positions "
+            f"({bytedance_source_entry.get('project_name', bytedance_source_entry['file'])}): "
+            f"{bytedance_source_entry.get('total_count', 0)}"
+        )
     print(f"Huawei position cards: {huawei_total}")
     print(f"Huawei expanded intent rows: {len(huawei_jobs)}")
     print(f"Huawei Wuhan R&D intent rows: {len(huawei_wuhan_rd_jobs)}")
@@ -704,8 +799,9 @@ def main() -> None:
     if args.ali_daily_batch_id:
         print(f"Wrote {ali_daily_json}")
         print(f"Wrote {ali_daily_csv}")
-    print(f"Wrote {ant_json}")
-    print(f"Wrote {ant_csv}")
+    for ant_export in ant_exports:
+        print(f"Wrote {ant_export['json_path']}")
+        print(f"Wrote {ant_export['csv_path']}")
     print(f"Wrote {huawei_json}")
     print(f"Wrote {huawei_csv}")
     print(f"Wrote {huawei_wuhan_rd_json}")

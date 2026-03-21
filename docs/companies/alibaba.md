@@ -8,7 +8,7 @@ Snapshot source:
 
 - Source: `Alibaba`
 - Batch ID: `100000540002`
-- Export timestamp: `2026-03-20T16:50:01.828577+00:00`
+- Export timestamp: `2026-03-21T05:32:40.862477+00:00`
 - Total exported roles: `455`
 
 ## High-level distribution

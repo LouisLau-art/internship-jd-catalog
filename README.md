@@ -1,6 +1,6 @@
 # Internship JD Catalog
 
-Collected internship job descriptions and quick-fit notes for Louis Lau.
+Collected internship job descriptions and quick-fit notes.
 
 ## Snapshot
 
@@ -16,12 +16,15 @@ Collected internship job descriptions and quick-fit notes for Louis Lau.
   - `Xiaomi`
   - `Xiaohongshu`
 - Raw export pools captured:
-  - `Alibaba`: `455`
+  - `Alibaba` 2027 internship batch: `455`
   - `Alibaba` daily internship technical filter: `72`
-  - `Ant Group`: `96`
+  - `Ant Group` return-offer internship batch: `96`
+  - `Ant Group` campus internship batch: `45`
   - `ByteDance` `ByteIntern + 后端`: `558`
+  - `ByteDance` `DailyIntern + 后端`: `210`
   - `Huawei` internship intent rows: `80`
   - `Huawei` Wuhan R&D intent rows: `73`
+  - Combined raw export rows: `1516`
 
 ## What is in this repo
 
@@ -36,9 +39,13 @@ Collected internship job descriptions and quick-fit notes for Louis Lau.
 - [docs/companies/alibaba-daily.md](./docs/companies/alibaba-daily.md)
   Summary note for the Alibaba daily internship technical-role export snapshot.
 - [docs/companies/antgroup.md](./docs/companies/antgroup.md)
-  Summary note for the Ant Group raw campus export snapshot.
+  Summary note for the Ant Group return-offer internship raw export snapshot.
+- [docs/companies/antgroup-campus-intern.md](./docs/companies/antgroup-campus-intern.md)
+  Summary note for the Ant Group campus internship raw export snapshot that is not explicitly split into daily versus return-offer tracks.
 - [docs/companies/bytedance.md](./docs/companies/bytedance.md)
   Summary note for the ByteDance `ByteIntern + 后端` raw export snapshot.
+- [docs/companies/bytedance-daily.md](./docs/companies/bytedance-daily.md)
+  Summary note for the ByteDance `DailyIntern + 后端` raw export snapshot.
 - [docs/xiaomi-top-5.md](./docs/xiaomi-top-5.md)
   Ordered shortlist of the 5 Xiaomi roles currently worth prioritizing.
 - [docs/alibaba-top-5.md](./docs/alibaba-top-5.md)
@@ -51,17 +58,23 @@ Collected internship job descriptions and quick-fit notes for Louis Lau.
 ## Raw Site Exports
 
 - [scripts/scrape_campus_jobs.py](./scripts/scrape_campus_jobs.py)
-  Bulk-export utility for the Alibaba, Ant Group, and Huawei campus job pages.
+  Bulk-export utility for the Alibaba, Ant Group, and Huawei campus job pages, and for rebuilding the combined export after ByteDance raw exports are refreshed.
+- [scripts/scrape_bytedance_jobs.py](./scripts/scrape_bytedance_jobs.py)
+  Primary ByteDance campus export script. It bootstraps browser cookies/CSRF via Python Playwright, then normalizes the raw project pool.
 - [scripts/scrape_bytedance_jobs.js](./scripts/scrape_bytedance_jobs.js)
-  ByteDance campus export script that bootstraps browser cookies/CSRF via Bun + Playwright, then normalizes the `ByteIntern + 后端` raw pool.
+  Legacy Bun variant of the ByteDance export flow.
 - [data/alibaba_positions_100000540002.csv](./data/alibaba_positions_100000540002.csv)
   Raw Alibaba 2027 internship export from `2026-03-21`.
 - [data/alibaba_positions_100000560002_tech.csv](./data/alibaba_positions_100000560002_tech.csv)
   Raw Alibaba daily internship technical-role export from `2026-03-21`.
 - [data/antgroup_positions_26022600074513.csv](./data/antgroup_positions_26022600074513.csv)
   Raw Ant Group 2027 return-offer internship export from `2026-03-21`.
+- [data/antgroup_positions_25051200066269.csv](./data/antgroup_positions_25051200066269.csv)
+  Raw Ant Group campus internship export from `2026-03-21`.
 - [data/bytedance_positions_byteintern_backend.csv](./data/bytedance_positions_byteintern_backend.csv)
   Raw ByteDance `ByteIntern + 后端` export from `2026-03-21`.
+- [data/bytedance_positions_dailyintern_backend.csv](./data/bytedance_positions_dailyintern_backend.csv)
+  Raw ByteDance `DailyIntern + 后端` export from `2026-03-21`.
 - [data/huawei_positions_intern.csv](./data/huawei_positions_intern.csv)
   Huawei campus internship export expanded to intent-level JDs from `2026-03-21`.
 - [data/huawei_positions_wuhan_rd.csv](./data/huawei_positions_wuhan_rd.csv)
@@ -113,5 +126,6 @@ Collected internship job descriptions and quick-fit notes for Louis Lau.
   - `ScholarFlow`
   - `multi-cloud-email-sender`
   - `multi-agent-skills-catalog`
+- Personal resume sources and generated application materials are intentionally kept out of Git so the repository can stay publishable.
 - It is meant to support application strategy and tailored resume generation, not to store fabricated claims.
 - The raw `data/` exports are intentionally kept separate from the curated root `catalog.csv` so large site dumps do not pollute the reviewed shortlist.

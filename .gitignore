@@ -1,2 +1,7 @@
 __pycache__/
 *.pyc
+GEMINI.md
+resumes/
+resume-refresh-*/
+scripts/export_resumes.py
+tests/test_export_resumes.py
