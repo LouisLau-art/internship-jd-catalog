@@ -41,7 +41,7 @@ Collected internship job descriptions and quick-fit notes.
 - [docs/companies/antgroup.md](./docs/companies/antgroup.md)
   Summary note for the Ant Group return-offer internship raw export snapshot.
 - [docs/companies/antgroup-campus-intern.md](./docs/companies/antgroup-campus-intern.md)
-  Summary note for the Ant Group campus internship raw export snapshot that is not explicitly split into daily versus return-offer tracks.
+  Summary note for the Ant Group `日常实习` raw export snapshot.
 - [docs/companies/bytedance.md](./docs/companies/bytedance.md)
   Summary note for the ByteDance `ByteIntern + 后端` raw export snapshot.
 - [docs/companies/bytedance-daily.md](./docs/companies/bytedance-daily.md)
@@ -50,8 +50,14 @@ Collected internship job descriptions and quick-fit notes.
   Ordered shortlist of the 5 Xiaomi roles currently worth prioritizing.
 - [docs/alibaba-top-5.md](./docs/alibaba-top-5.md)
   First reviewed shortlist for Alibaba roles from the raw export pool.
+- [docs/alibaba-top-10.md](./docs/alibaba-top-10.md)
+  Expanded top-10 shortlist across Alibaba 2027 and daily internship pools.
 - [docs/antgroup-top-5.md](./docs/antgroup-top-5.md)
   First reviewed shortlist for Ant Group roles from the raw export pool.
+- [docs/antgroup-top-10.md](./docs/antgroup-top-10.md)
+  Expanded top-10 shortlist across Ant return-offer and daily internship pools.
+- [docs/bytedance-top-10.md](./docs/bytedance-top-10.md)
+  Expanded top-10 shortlist across ByteDance `ByteIntern` and `DailyIntern` backend pools.
 - [docs/daily-intern-top-5.md](./docs/daily-intern-top-5.md)
   Cross-company shortlist for the 5 highlighted `日常实习` roles.
 
