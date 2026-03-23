@@ -1,0 +1,6 @@
+{
+  "github": {
+    "command": "/home/louis/.bun/bin/mcp-server-github",
+    "args": []
+  }
+}

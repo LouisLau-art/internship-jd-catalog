@@ -11,6 +11,8 @@ Collected internship job descriptions and quick-fit notes.
   - `Alibaba`
   - `Ant Group`
   - `ByteDance`
+  - `Meituan`
+  - `JD`
   - `OceanBase`
   - `Huawei`
   - `Xiaomi`
@@ -22,9 +24,11 @@ Collected internship job descriptions and quick-fit notes.
   - `Ant Group` campus internship batch: `45`
   - `ByteDance` `ByteIntern + 后端`: `558`
   - `ByteDance` `DailyIntern + 后端`: `210`
+  - `Meituan` daily internship (backend/efficiency): `70`
+  - `JD` 2027 internship batch: `81`
   - `Huawei` internship intent rows: `80`
   - `Huawei` Wuhan R&D intent rows: `73`
-  - Combined raw export rows: `1516`
+  - Combined raw export rows: `1667`
 
 ## What is in this repo
 
@@ -38,6 +42,10 @@ Collected internship job descriptions and quick-fit notes.
   Summary note for the Alibaba 2027 internship raw campus export snapshot.
 - [docs/companies/alibaba-daily.md](./docs/companies/alibaba-daily.md)
   Summary note for the Alibaba daily internship technical-role export snapshot.
+- [docs/companies/meituan.md](./docs/companies/meituan.md)
+  Summary note for the Meituan daily internship export snapshot.
+- [docs/companies/jd.md](./docs/companies/jd.md)
+  Summary note for the JD 2027 internship raw export snapshot.
 - [docs/companies/antgroup.md](./docs/companies/antgroup.md)
   Summary note for the Ant Group return-offer internship raw export snapshot.
 - [docs/companies/antgroup-campus-intern.md](./docs/companies/antgroup-campus-intern.md)
@@ -58,13 +66,17 @@ Collected internship job descriptions and quick-fit notes.
   Expanded top-10 shortlist across Ant return-offer and daily internship pools.
 - [docs/bytedance-top-10.md](./docs/bytedance-top-10.md)
   Expanded top-10 shortlist across ByteDance `ByteIntern` and `DailyIntern` backend pools.
+- [docs/meituan-jd-top-5.md](./docs/meituan-jd-top-5.md)
+  Ordered shortlist of the 5 Meituan and JD roles currently worth prioritizing.
 - [docs/daily-intern-top-5.md](./docs/daily-intern-top-5.md)
   Cross-company shortlist for the 5 highlighted `日常实习` roles.
 
 ## Raw Site Exports
 
 - [scripts/scrape_campus_jobs.py](./scripts/scrape_campus_jobs.py)
-  Bulk-export utility for the Alibaba, Ant Group, and Huawei campus job pages, and for rebuilding the combined export after ByteDance raw exports are refreshed.
+  Bulk-export utility for Alibaba, Ant, Meituan, JD, and Huawei, and for rebuilding the combined export.
+- [scripts/scrape_meituan_jd.py](./scripts/scrape_meituan_jd.py)
+  Specific scraper for Meituan and JD API endpoints.
 - [scripts/scrape_bytedance_jobs.py](./scripts/scrape_bytedance_jobs.py)
   Primary ByteDance campus export script. It bootstraps browser cookies/CSRF via Python Playwright, then normalizes the raw project pool.
 - [scripts/scrape_bytedance_jobs.js](./scripts/scrape_bytedance_jobs.js)
@@ -81,6 +93,10 @@ Collected internship job descriptions and quick-fit notes.
   Raw ByteDance `ByteIntern + 后端` export from `2026-03-21`.
 - [data/bytedance_positions_dailyintern_backend.csv](./data/bytedance_positions_dailyintern_backend.csv)
   Raw ByteDance `DailyIntern + 后端` export from `2026-03-21`.
+- [data/meituan_positions.csv](./data/meituan_positions.csv)
+  Raw Meituan daily internship export from `2026-03-22`.
+- [data/jd_positions.csv](./data/jd_positions.csv)
+  Raw JD 2027 campus internship export from `2026-03-22`.
 - [data/huawei_positions_intern.csv](./data/huawei_positions_intern.csv)
   Huawei campus internship export expanded to intent-level JDs from `2026-03-21`.
 - [data/huawei_positions_wuhan_rd.csv](./data/huawei_positions_wuhan_rd.csv)

@@ -24,6 +24,8 @@ ALI_DAILY_BATCH_ID = "100000560002"
 ALI_DAILY_CATEGORY_NAME = "技术类"
 ALI_DAILY_OUTPUT_SUFFIX = "tech"
 BYTEDANCE_EXPORT_GLOB = "bytedance_positions_*.json"
+MEITUAN_EXPORT_GLOB = "meituan_positions.json"
+JD_EXPORT_GLOB = "jd_positions.json"
 HUAWEI_JOB_TYPE = "0"
 HUAWEI_JOB_TYPES = "0"
 HUAWEI_LANGUAGE = "zh_CN"
@@ -656,10 +658,12 @@ def main() -> None:
     huawei_jobs = expand_huawei_jobs(huawei_jobs_raw, huawei_opener)
     huawei_wuhan_rd_jobs = [row for row in huawei_jobs if is_huawei_wuhan_rd_job(row)]
     bytedance_source_entries, bytedance_jobs = load_maintained_exports(output_dir, BYTEDANCE_EXPORT_GLOB)
+    meituan_source_entries, meituan_jobs = load_maintained_exports(output_dir, MEITUAN_EXPORT_GLOB)
+    jd_source_entries, jd_jobs = load_maintained_exports(output_dir, JD_EXPORT_GLOB)
 
     generated_at = datetime.now(timezone.utc).isoformat()
     combined = sorted(
-        ali_jobs + ali_daily_jobs + ant_jobs + bytedance_jobs + huawei_jobs,
+        ali_jobs + ali_daily_jobs + ant_jobs + bytedance_jobs + huawei_jobs + meituan_jobs + jd_jobs,
         key=lambda row: (row["source"], str(row.get("batch_id", "")), str(row["position_id"])),
     )
 
@@ -763,6 +767,8 @@ def main() -> None:
                 },
                 *ant_source_entries,
                 *bytedance_source_entries,
+                *meituan_source_entries,
+                *jd_source_entries,
                 {
                     "source": "huawei",
                     "job_type": HUAWEI_JOB_TYPE,
