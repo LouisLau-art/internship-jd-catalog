@@ -13,22 +13,24 @@ Collected internship job descriptions and quick-fit notes.
   - `ByteDance`
   - `Meituan`
   - `JD`
+  - `Tencent`
   - `OceanBase`
   - `Huawei`
   - `Xiaomi`
   - `Xiaohongshu`
 - Raw export pools captured:
-  - `Alibaba` 2027 internship batch: `455`
-  - `Alibaba` daily internship technical filter: `72`
+  - `Alibaba` 2027 internship batch: `453`
+  - `Alibaba` daily internship technical filter: `75`
   - `Ant Group` return-offer internship batch: `96`
   - `Ant Group` campus internship batch: `45`
   - `ByteDance` `ByteIntern + 后端`: `558`
   - `ByteDance` `DailyIntern + 后端`: `210`
   - `Meituan` daily internship (backend/efficiency): `70`
   - `JD` 2027 internship batch: `81`
-  - `Huawei` internship intent rows: `80`
-  - `Huawei` Wuhan R&D intent rows: `73`
-  - Combined raw export rows: `1667`
+  - `Tencent` technical internship pool: `100`
+  - `Huawei` internship intent rows: `81`
+  - `Huawei` Wuhan R&D intent rows: `74`
+  - Combined raw export rows: `1769`
 
 ## What is in this repo
 
@@ -46,6 +48,8 @@ Collected internship job descriptions and quick-fit notes.
   Summary note for the Meituan daily internship export snapshot.
 - [docs/companies/jd.md](./docs/companies/jd.md)
   Summary note for the JD 2027 internship raw export snapshot.
+- [docs/companies/tencent.md](./docs/companies/tencent.md)
+  Summary note for the Tencent technical internship export snapshot.
 - [docs/companies/antgroup.md](./docs/companies/antgroup.md)
   Summary note for the Ant Group return-offer internship raw export snapshot.
 - [docs/companies/antgroup-campus-intern.md](./docs/companies/antgroup-campus-intern.md)
@@ -77,6 +81,8 @@ Collected internship job descriptions and quick-fit notes.
   Bulk-export utility for Alibaba, Ant, Meituan, JD, and Huawei, and for rebuilding the combined export.
 - [scripts/scrape_meituan_jd.py](./scripts/scrape_meituan_jd.py)
   Specific scraper for Meituan and JD API endpoints.
+- [scripts/scrape_tencent_jobs.py](./scripts/scrape_tencent_jobs.py)
+  Specific scraper for Tencent API endpoints.
 - [scripts/scrape_bytedance_jobs.py](./scripts/scrape_bytedance_jobs.py)
   Primary ByteDance campus export script. It bootstraps browser cookies/CSRF via Python Playwright, then normalizes the raw project pool.
 - [scripts/scrape_bytedance_jobs.js](./scripts/scrape_bytedance_jobs.js)
@@ -97,6 +103,8 @@ Collected internship job descriptions and quick-fit notes.
   Raw Meituan daily internship export from `2026-03-22`.
 - [data/jd_positions.csv](./data/jd_positions.csv)
   Raw JD 2027 campus internship export from `2026-03-22`.
+- [data/tencent_positions.csv](./data/tencent_positions.csv)
+  Raw Tencent technical internship export from `2026-03-24`.
 - [data/huawei_positions_intern.csv](./data/huawei_positions_intern.csv)
   Huawei campus internship export expanded to intent-level JDs from `2026-03-21`.
 - [data/huawei_positions_wuhan_rd.csv](./data/huawei_positions_wuhan_rd.csv)
