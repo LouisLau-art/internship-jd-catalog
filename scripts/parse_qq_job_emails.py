@@ -22,11 +22,9 @@ import json
 import re
 import imaplib
 import sys
-import os
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
 from typing import Any
-from dotenv import load_dotenv
 
 
 # QQ 邮箱 IMAP 服务器配置
@@ -37,12 +35,14 @@ QQ_IMAP_PORT_NON_SSL = 143
 # 公司域名列表
 COMPANY_DOMAINS = [
     'bytedance.com', 'mi.com', 'meituan.com', 'jd.com',
-    'alibaba-inc.com', 'antgroup.com', 'tencent.com', 'xiaohongshu.com'
+    'alibaba-inc.com', 'alibaba.com', 'antgroup.com', 'tencent.com', 
+    'xiaohongshu.com', 'huawei.com', 'netease.com', '163.com', '126.com',
+    'pinduoduo.com', 'didiglobal.com', 'oceanbase.com'
 ]
 
 # 动作词列表
 ACTION_WORDS = [
-    '面试', '笔试', '测评', '录取', 'Offer', '投递', '通知', '安排'
+    '面试', '笔试', '测评', '安排', '邀请', '录取', 'Offer', '投递', '通知'
 ]
 
 
@@ -343,17 +343,34 @@ def search_job_emails(mail: imaplib.IMAP4_SSL, limit: int = 50) -> list[dict[str
         return []
 
 
+def load_env_manually(file_path: Path) -> dict[str, str]:
+    """手动读取 .env 文件并解析环境变量"""
+    env_vars = {}
+    if file_path.exists():
+        with file_path.open("r", encoding="utf-8") as f:
+            for line in f:
+                line = line.strip()
+                if not line or line.startswith("#"):
+                    continue
+                if "=" in line:
+                    parts = line.split("=", 1)
+                    if len(parts) == 2:
+                        key = parts[0].strip()
+                        value = parts[1].strip().strip("'").strip('"')
+                        env_vars[key] = value
+    return env_vars
+
+
 def main() -> None:
-    # 加载 .env 文件
+    # 加载 .env 文件 (手动模式)
     env_path = Path(".env")
-    if not env_path.exists():
-        print("错误: 根目录未找到 .env 文件。请先创建 .env 并配置 QQ_EMAIL 和 QQ_AUTH_CODE。")
-        sys.exit(1)
+    env_vars = load_env_manually(env_path)
     
-    load_dotenv(dotenv_path=env_path)
+    if not env_vars:
+        print("警告: 根目录未找到 .env 文件或文件为空。请先创建 .env 并配置 QQ_EMAIL 和 QQ_AUTH_CODE。")
     
-    default_email = os.getenv("QQ_EMAIL")
-    default_password = os.getenv("QQ_AUTH_CODE")
+    default_email = env_vars.get("QQ_EMAIL")
+    default_password = env_vars.get("QQ_AUTH_CODE")
 
     parser = argparse.ArgumentParser(
         description="解析 QQ 邮箱中的求职邮件，提取面试、投递、通知等信息"
