@@ -8,8 +8,9 @@ def generate_fingerprint(company, role, date):
     # Normalize strings: remove bold, strip whitespace, lowercase
     def normalize(s):
         if s is None: return ""
-        s = s.replace("**", "")
-        return s.strip().lower()
+        if isinstance(s, str):
+            s = s.replace("**", "")
+        return str(s).strip().lower()
     
     # Use only the date part (YYYY-MM-DD) for fingerprinting
     norm_date = normalize(date)[:10]
@@ -24,9 +25,16 @@ def parse_md_table(md_content, section_title):
     # Find the section
     section_index = -1
     for i, line in enumerate(lines):
-        if line.startswith("##") and section_title in line:
+        if line.strip().startswith("##") and section_title in line:
             section_index = i
             break
+    
+    if section_index == -1:
+        # Also try sub-headings
+        for i, line in enumerate(lines):
+            if line.strip().startswith("###") and section_title in line:
+                section_index = i
+                break
     
     if section_index == -1:
         return fingerprints
@@ -43,18 +51,18 @@ def parse_md_table(md_content, section_title):
                 # Filter out the empty parts from split if they are just from leading/trailing pipes
                 parts = [p.strip() for p in line.split("|")][1:-1]
                 if len(parts) >= 4:
-                    if section_title == "已投递岗位":
+                    if "已投递" in section_title:
                         # | 公司 | 岗位 | 地点 | 状态 | 投递日期 | 备注 |
                         company = parts[0]
                         role = parts[1]
-                        date = parts[4]
+                        date = parts[4] if len(parts) > 4 else ""
                         if company != "-" and role != "-":
                             fingerprints.add(generate_fingerprint(company, role, date))
-                    elif section_title == "已收到面试邀请":
+                    elif "面试" in section_title:
                         # | 公司 | 岗位 | 面试形式 | 日期 |
                         company = parts[0]
                         role = parts[1]
-                        date = parts[3]
+                        date = parts[3] if len(parts) > 3 else ""
                         if company != "-" and role != "-":
                             fingerprints.add(generate_fingerprint(company, role, date))
         elif table_started and not line.startswith("|"):
@@ -97,12 +105,18 @@ def sync_emails_to_md(json_data, md_content):
                 interview_fingerprints.add(fp)
         
         # All job-related emails can be added to "Applied" if not already there
-        # but specifically 'application' and 'interview' types
-        if etype in ["application", "interview", "notification"]:
+        # specifically 'application', 'interview', 'notification' types
+        if etype in ["application", "interview", "notification", "rejection"]:
             fp = generate_fingerprint(company, role, email_date)
             if fp not in applied_fingerprints:
                 location = email.get("location", "-")
-                status = "已收到邀请" if etype == "interview" else "已投递"
+                status_map = {
+                    "application": "已投递",
+                    "interview": "已邀请面试",
+                    "notification": "流程更新",
+                    "rejection": "已结束"
+                }
+                status = status_map.get(etype, "已投递")
                 new_applied_rows.append(f"| **{company}** | {role} | {location} | {status} | {email_date} | - |")
                 applied_fingerprints.add(fp)
 
@@ -118,7 +132,7 @@ def sync_emails_to_md(json_data, md_content):
             if "## ✅ 已投递岗位" in line:
                 # Find table header
                 for j in range(i + 1, len(lines)):
-                    if lines[j].startswith("| 公司 |"):
+                    if "| 公司 |" in lines[j]:
                         target_idx = j + 2 # After separator line
                         break
                 break
@@ -138,7 +152,7 @@ def sync_emails_to_md(json_data, md_content):
             if "### 已收到面试邀请" in line:
                 # Find table header
                 for j in range(i + 1, len(lines)):
-                    if lines[j].startswith("| 公司 |"):
+                    if "| 公司 |" in lines[j]:
                         target_idx = j + 2 # After separator line
                         break
                 break
@@ -153,7 +167,7 @@ def sync_emails_to_md(json_data, md_content):
     # Update "最后更新" date
     today = datetime.now().strftime("%Y-%m-%d")
     for i, line in enumerate(lines):
-        if line.startswith("最后更新："):
+        if "最后更新" in line:
             lines[i] = f"最后更新：{today}"
             break
 
@@ -168,6 +182,10 @@ if __name__ == "__main__":
 
     if not os.path.exists(args.input):
         print(f"Input file {args.input} not found. Skipping sync.")
+        exit(0)
+
+    if not os.path.exists(args.output):
+        print(f"Output file {args.output} not found. Skipping sync.")
         exit(0)
 
     with open(args.input, "r", encoding="utf-8") as f:
