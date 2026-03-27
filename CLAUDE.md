@@ -146,6 +146,22 @@ All CSV exports in `data/` share a consistent schema with columns: `source`, `co
 - **Gitignore:** Generated artifacts (`.pdf`, `.docx`, `.png`) and certain scripts (`scripts/export_resumes.py`, `tests/test_export_resumes.py`) are excluded from Git to keep the repository lightweight. The `resumes/` and `resume-refresh-*/` directories are also gitignored.
 - **Testing:** The project uses a standard Python `unittest` framework for testing scripts (located in `tests/`).
 
+## Troubleshooting & Common Issues
+
+### Scraping Issues
+- **Playwright登录失败**: 运行`playwright install chromium`安装浏览器，检查网络连接和滑块验证是否需要手动干预
+- **网站结构变化**: 公司官网更新后需要调整对应的XPath/CSS选择器
+- **IP被限制**: 增加请求间隔时间，或使用代理池
+
+### Resume Export Issues
+- **Pandoc转换错误**: 检查Markdown语法是否正确，特别是表格和列表格式
+- **Chrome无头模式启动失败**: 确保已安装`google-chrome-stable`，尝试`google-chrome --version`验证
+- **中文字体显示问题**: 安装中文字体包（如`fonts-noto-cjk`），确保PDF生成时字体路径正确
+- **图片加载失败**: 检查头像图片路径是否正确，支持绝对路径和相对路径
+
+### Sync Issues
+- **QQ邮件同步失败**: 检查IMAP权限是否开启，授权码是否正确配置
+
 ## Gotchas
 
 - Some files referenced in documentation (e.g., `scripts/export_resumes.py`, `resumes/export_manifest.json`) may be gitignored and not present in the working tree.
