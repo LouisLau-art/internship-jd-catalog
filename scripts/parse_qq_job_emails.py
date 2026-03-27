@@ -21,6 +21,7 @@ import email.policy
 import json
 import re
 import imaplib
+import os
 import sys
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
@@ -361,16 +362,26 @@ def load_env_manually(file_path: Path) -> dict[str, str]:
     return env_vars
 
 
+def get_default_credentials(file_path: Path) -> tuple[str | None, str | None]:
+    """
+    解析默认凭据。
+
+    优先使用 .env 中的值；若 .env 缺失或字段为空，则回退到已导出的环境变量。
+    """
+    env_vars = load_env_manually(file_path)
+    email_value = env_vars.get("QQ_EMAIL") or os.getenv("QQ_EMAIL")
+    auth_code_value = env_vars.get("QQ_AUTH_CODE") or os.getenv("QQ_AUTH_CODE")
+    return email_value, auth_code_value
+
+
 def main() -> None:
     # 加载 .env 文件 (手动模式)
     env_path = Path(".env")
     env_vars = load_env_manually(env_path)
-    
-    if not env_vars:
-        print("警告: 根目录未找到 .env 文件或文件为空。请先创建 .env 并配置 QQ_EMAIL 和 QQ_AUTH_CODE。")
-    
-    default_email = env_vars.get("QQ_EMAIL")
-    default_password = env_vars.get("QQ_AUTH_CODE")
+    default_email, default_password = get_default_credentials(env_path)
+
+    if not env_vars and not (default_email and default_password):
+        print("警告: 根目录未找到 .env 文件或文件为空，且当前环境变量中也没有 QQ_EMAIL / QQ_AUTH_CODE。")
 
     parser = argparse.ArgumentParser(
         description="解析 QQ 邮箱中的求职邮件，提取面试、投递、通知等信息"

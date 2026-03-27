@@ -64,10 +64,28 @@ python -m unittest discover tests
 /sync-jobs
 ```
 
+### Audit Job Fit vs Resume Coverage
+```bash
+# Audit suitable roles against current resume assets and sync the dashboard
+/job-fit-to-resume
+
+# Equivalent script entrypoint
+python scripts/audit_resume_coverage.py --sync-doc docs/job-search-progress.md
+```
+
 ## Recommended Workflow
 
 ### 1. Automation & Discovery
 - **Always** start configuration, automation, or plugin/MCP setup sessions by invoking the automation recommender first with `/automation-recommender` to leverage pre-built workflows and avoid redundant setup.
+
+### 1.5 Job Fit → Resume Coverage
+- Use **`/job-fit-to-resume`** before generating a new targeted resume.
+- The audit checks `docs/job-search-progress.md`, generator scripts under `resumes/scripts/`, and exported assets in `resumes/sources/`.
+- Treat the audit statuses as the decision gate:
+  - `generated`: reuse current PDF
+  - `generator_ready`: run the matched generator script
+  - `reusable`: adapt the closest existing same-company resume
+  - `missing`: create a new targeted version
 
 ### 2. AI-Native Resume Generation (The Deep Diver)
 - Use the **`/generate-resume`** pattern to extract high-leverage "AI-Native Engineering" evidence.
