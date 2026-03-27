@@ -1,6 +1,8 @@
 {
-  "github": {
-    "command": "/home/louis/.bun/bin/mcp-server-github",
-    "args": []
+  "mcpServers": {
+    "github": {
+      "command": "/home/louis/.bun/bin/mcp-server-github",
+      "args": []
+    }
   }
 }

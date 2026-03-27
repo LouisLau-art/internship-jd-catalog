@@ -1,0 +1,95 @@
+{
+  "generated_at": "2026-03-27T04:02:15.630924+00:00",
+  "source": "pinduoduo",
+  "company": "Pinduoduo",
+  "total_count": 6,
+  "jobs": [
+    {
+      "source": "pinduoduo",
+      "company": "Pinduoduo",
+      "position_id": "大模型算法实习生",
+      "position_name": "大模型算法实习生",
+      "position_url": "https://careers.pddglobalhr.com/campus/intern",
+      "batch_name": "技术专场",
+      "category_name": "技术",
+      "work_locations": "上海",
+      "feature_tags": "紧缺",
+      "publish_time": "2026-03-03",
+      "description": "拼多多技术专场实习生招聘",
+      "requirement": "请通过官网岗位列表查看详情"
+    },
+    {
+      "source": "pinduoduo",
+      "company": "Pinduoduo",
+      "position_id": "服务端研发实习生",
+      "position_name": "服务端研发实习生",
+      "position_url": "https://careers.pddglobalhr.com/campus/intern",
+      "batch_name": "技术专场",
+      "category_name": "技术",
+      "work_locations": "上海",
+      "feature_tags": "",
+      "publish_time": "2026-03-03",
+      "description": "拼多多技术专场实习生招聘",
+      "requirement": "请通过官网岗位列表查看详情"
+    },
+    {
+      "source": "pinduoduo",
+      "company": "Pinduoduo",
+      "position_id": "算法实习生",
+      "position_name": "算法实习生",
+      "position_url": "https://careers.pddglobalhr.com/campus/intern",
+      "batch_name": "技术专场",
+      "category_name": "技术",
+      "work_locations": "上海",
+      "feature_tags": "",
+      "publish_time": "2026-03-03",
+      "description": "拼多多技术专场实习生招聘",
+      "requirement": "请通过官网岗位列表查看详情"
+    },
+    {
+      "source": "pinduoduo",
+      "company": "Pinduoduo",
+      "position_id": "客户端研发实习生",
+      "position_name": "客户端研发实习生",
+      "position_url": "https://careers.pddglobalhr.com/campus/intern",
+      "batch_name": "技术专场",
+      "category_name": "技术",
+      "work_locations": "上海",
+      "feature_tags": "",
+      "publish_time": "2026-03-03",
+      "description": "拼多多技术专场实习生招聘",
+      "requirement": "请通过官网岗位列表查看详情"
+    },
+    {
+      "source": "pinduoduo",
+      "company": "Pinduoduo",
+      "position_id": "web前端研发实习生",
+      "position_name": "web前端研发实习生",
+      "position_url": "https://careers.pddglobalhr.com/campus/intern",
+      "batch_name": "技术专场",
+      "category_name": "技术",
+      "work_locations": "上海",
+      "feature_tags": "",
+      "publish_time": "2026-03-03",
+      "description": "拼多多技术专场实习生招聘",
+      "requirement": "请通过官网岗位列表查看详情"
+    },
+    {
+      "source": "pinduoduo",
+      "company": "Pinduoduo",
+      "position_id": "安全实习生",
+      "position_name": "安全实习生",
+      "position_url": "https://careers.pddglobalhr.com/campus/intern",
+      "batch_name": "技术专场",
+      "category_name": "技术",
+      "work_locations": "上海",
+      "feature_tags": "",
+      "publish_time": "2026-03-03",
+      "description": "拼多多技术专场实习生招聘",
+      "requirement": "请通过官网岗位列表查看详情"
+    }
+  ],
+  "filters": {
+    "category_name": "技术"
+  }
+}

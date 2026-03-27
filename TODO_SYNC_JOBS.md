@@ -1,0 +1,3 @@
+- [x] Task 1: Refactor Email Engine for Local Header Audit
+- [x] Task 2: Robust MD Table Synchronization
+- [ ] Task 3: Command Wrapping & Workflow Integration
