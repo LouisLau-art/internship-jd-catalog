@@ -424,6 +424,7 @@ def render_entry(entry: dict) -> str:
 def render_html(data: dict, photo: Path) -> str:
     # Some tailored resumes intentionally preserve a hand-curated project order.
     projects = data["projects"] if data.get("preserve_projects") else normalize_projects(data["projects"])
+    self_evaluation = data.get("self_evaluation", COMMON["self_evaluation"])
     sidebar_skills = "\n".join(
         f"""          <div class="skill-group">
             <span class="skill-label">{html.escape(label)}</span>
@@ -503,7 +504,7 @@ def render_html(data: dict, photo: Path) -> str:
 
           <section class="section">
             <h2 class="section-title">自我评价</h2>
-            <div class="panel">{html.escape(COMMON['self_evaluation'])}</div>
+            <div class="panel">{html.escape(self_evaluation)}</div>
           </section>
 
           <section class="section">
@@ -555,6 +556,7 @@ def render_html(data: dict, photo: Path) -> str:
 
 def render_markdown(data: dict, photo: Path) -> str:
     projects = data["projects"] if data.get("preserve_projects") else normalize_projects(data["projects"])
+    self_evaluation = data.get("self_evaluation", COMMON["self_evaluation"])
     skills_md = "\n".join(f"- {label}：{value}" for label, value in data["skills"])
     works_md = "\n".join(f"- {label}：{value}" for label, value in COMMON["works"])
 
@@ -585,7 +587,7 @@ GitHub: {COMMON['github']} | Homepage: {COMMON['homepage']}
 {data['summary']}
 
 ## 自我评价
-{COMMON['self_evaluation']}
+{self_evaluation}
 
 ## 作品展示
 {works_md}

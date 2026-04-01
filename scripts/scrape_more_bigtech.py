@@ -3,12 +3,14 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+import html
 import hmac
 import json
 import re
 import shutil
 import subprocess
 import time
+import uuid
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -61,8 +63,13 @@ HONOR_API_URL = (
     "SU61b9b9992f9d24431f5050a5?iSaJAx=isAjax&request_locale=zh_CN&t={timestamp}"
 )
 
-BILIBILI_INTERN_URL = "https://jobs.bilibili.com/campus/positions?practiceTypes=1&type=0"
+BILIBILI_INTERN_URL = "https://jobs.bilibili.com/campus/positions?code=01&practiceTypes=1,2&type=0"
 BILIBILI_JOB_COUNT_RE = re.compile(r"职位列表\s*[（(](\d+)[）)]")
+BILIBILI_APP_KEY = "ops.ehr-api.auth"
+BILIBILI_POSITION_LIST_URL = "https://jobs.bilibili.com/api/campus/position/positionList"
+BILIBILI_POSITION_PAGE_URL = "https://jobs.bilibili.com/campus/positions/{position_id}"
+BILIBILI_BOOTSTRAP_SELECTOR = ".space > a.bili-item-card"
+BILIBILI_BOOTSTRAP_WAIT_MS = 15000
 
 OPPO_LIST_URL = "https://careers.oppo.com/university/oppo/campus/post?recruitType=Intern"
 OPPO_PROJECT_LIST_URL = "https://careers.oppo.com/openapi/position/project/list"
@@ -184,6 +191,155 @@ def parse_bilibili_job_count(markdown: str) -> int:
     return int(match.group(1))
 
 
+def normalize_bilibili_locations(value: str) -> str:
+    parts = [clean_line(part) for part in re.split(r"[\\/]", value or "") if clean_line(part)]
+    return " | ".join(parts)
+
+
+def normalize_bilibili_description_text(value: str) -> str:
+    text = html.unescape(re.sub(r"<[^>]+>", "", value or ""))
+    lines = [clean_line(line) for line in text.replace("\r", "\n").split("\n")]
+    return "\n".join(line for line in lines if line)
+
+
+def split_bilibili_position_description(value: str) -> tuple[str, str]:
+    text = normalize_bilibili_description_text(value)
+    match = re.search(r"工作职责[:：]\s*(.*?)\s*工作要求[:：]\s*(.*)$", text, flags=re.S)
+    if match:
+        return match.group(1).strip(), match.group(2).strip()
+    requirement_match = re.search(r"工作要求[:：]\s*(.*)$", text, flags=re.S)
+    if requirement_match:
+        return "", requirement_match.group(1).strip()
+    return text, ""
+
+
+def normalize_bilibili_job(job: dict[str, Any]) -> dict[str, Any]:
+    position_id = str(job.get("id") or "")
+    description, requirement = split_bilibili_position_description(str(job.get("positionDescription") or ""))
+    feature_tags = []
+    if job.get("hotRecruit"):
+        feature_tags.append("热门职位")
+    if job.get("campusProjectId"):
+        feature_tags.append(f"campusProjectId={job['campusProjectId']}")
+    return {
+        "source": "bilibili",
+        "company": "Bilibili",
+        "position_id": position_id,
+        "position_name": job.get("positionName", ""),
+        "position_url": BILIBILI_POSITION_PAGE_URL.format(position_id=position_id),
+        "batch_name": "实习生招聘",
+        "category_name": job.get("postCodeName", ""),
+        "work_locations": normalize_bilibili_locations(str(job.get("workLocation") or job.get("workCity") or "")),
+        "departments": "",
+        "feature_tags": " | ".join(feature_tags),
+        "publish_time": job.get("pushTime") or job.get("ctime") or "",
+        "description": description,
+        "requirement": requirement,
+        "hot_recruit": bool(job.get("hotRecruit")),
+        "campus_project_id": str(job.get("campusProjectId") or ""),
+        "recruit_type": str(job.get("recruitType") or ""),
+    }
+
+
+def bootstrap_bilibili_api_context() -> tuple[dict[str, str], dict[str, str]]:
+    try:
+        from playwright.sync_api import sync_playwright
+    except ModuleNotFoundError as exc:
+        raise RuntimeError(
+            "Playwright is required to bootstrap the Bilibili anti-bot session. "
+            "Install it in the Python environment used to run this script."
+        ) from exc
+
+    captured_headers: dict[str, str] = {}
+    cookies: dict[str, str] = {}
+
+    with sync_playwright() as playwright:
+        browser = playwright.chromium.launch(headless=True)
+        page = browser.new_page()
+
+        def on_request(request: Any) -> None:
+            if request.url == BILIBILI_POSITION_LIST_URL and not captured_headers:
+                captured_headers.update(dict(request.headers))
+
+        page.on("request", on_request)
+        page.goto(BILIBILI_INTERN_URL, wait_until="domcontentloaded")
+        page.wait_for_selector(BILIBILI_BOOTSTRAP_SELECTOR, timeout=BILIBILI_BOOTSTRAP_WAIT_MS)
+        page.wait_for_timeout(1000)
+        for cookie in page.context.cookies():
+            domain = str(cookie.get("domain") or "")
+            if "bilibili.com" not in domain:
+                continue
+            name = str(cookie.get("name") or "")
+            value = str(cookie.get("value") or "")
+            if name and value:
+                cookies[name] = value
+        browser.close()
+
+    if not captured_headers:
+        raise RuntimeError("Could not capture Bilibili positionList request headers from the browser bootstrap")
+    if "x-csrf" not in captured_headers:
+        raise RuntimeError("Could not capture Bilibili x-csrf header from the browser bootstrap")
+
+    headers = {
+        "accept": "application/json, text/plain, */*",
+        "content-type": "application/json",
+        "origin": "https://jobs.bilibili.com",
+        "user-agent": captured_headers.get("user-agent", USER_AGENT),
+        "x-appkey": captured_headers.get("x-appkey", BILIBILI_APP_KEY),
+        "x-channel": captured_headers.get("x-channel", "campus"),
+        "x-csrf": captured_headers["x-csrf"],
+        "x-usertype": captured_headers.get("x-usertype", "2"),
+        "lunar-id": f"lunar-scrape-{uuid.uuid4()}",
+    }
+    for key in ("sec-ch-ua", "sec-ch-ua-mobile", "sec-ch-ua-platform"):
+        value = captured_headers.get(key)
+        if value:
+            headers[key] = value
+    return headers, cookies
+
+
+def build_bilibili_session() -> requests.Session:
+    session = request_session()
+    headers, cookies = bootstrap_bilibili_api_context()
+    session.headers.update(headers)
+    for name, value in cookies.items():
+        session.cookies.set(name, value, domain=".bilibili.com", path="/")
+    return session
+
+
+def build_bilibili_position_list_payload(*, page_num: int, page_size: int) -> dict[str, Any]:
+    return {
+        "pageSize": page_size,
+        "pageNum": page_num,
+        "positionName": "",
+        "postCode": ["01"],
+        "postCodeList": ["01"],
+        "workLocationList": [],
+        "workTypeList": ["0"],
+        "positionTypeList": ["0"],
+        "deptCodeList": [],
+        "recruitType": None,
+        "practiceTypes": ["1", "2"],
+        "onlyHotRecruit": 0,
+    }
+
+
+def fetch_bilibili_page(session: requests.Session, *, page_num: int, page_size: int = 100) -> dict[str, Any]:
+    response = session.post(
+        BILIBILI_POSITION_LIST_URL,
+        json=build_bilibili_position_list_payload(page_num=page_num, page_size=page_size),
+        timeout=30,
+    )
+    response.raise_for_status()
+    payload = response.json()
+    if payload.get("code") != 0:
+        raise RuntimeError(f"Bilibili positionList request failed: {payload}")
+    data = payload.get("data") or {}
+    if not isinstance(data, dict):
+        raise RuntimeError("Bilibili positionList response data is not an object")
+    return data
+
+
 def is_oppo_tech_job(job: dict[str, Any]) -> bool:
     return str(job.get("positionType") or "") in OPPO_TECH_POSITION_TYPES
 
@@ -296,15 +452,37 @@ def fetch_honor_rows(page_size: int = 15) -> list[dict[str, Any]]:
 
 
 def fetch_bilibili_rows(firecrawl_dir: Path, use_cached_firecrawl: bool) -> tuple[list[dict[str, Any]], int]:
-    path = firecrawl_dir / "bilibili-intern.md"
-    markdown = path.read_text(encoding="utf-8") if use_cached_firecrawl and path.exists() else scrape_with_firecrawl(
-        BILIBILI_INTERN_URL,
-        path,
-    )
-    count = parse_bilibili_job_count(markdown)
-    if count != 0:
-        raise RuntimeError("Bilibili internship page now has open roles; parser needs to be upgraded from zero-count mode.")
-    return [], count
+    try:
+        session = build_bilibili_session()
+        page_num = 1
+        total_pages = 1
+        reported_total_count = 0
+        deduped: dict[str, dict[str, Any]] = {}
+
+        while page_num <= total_pages:
+            data = fetch_bilibili_page(session, page_num=page_num, page_size=100)
+            total_pages = int(data.get("pages") or 1)
+            reported_total_count = int(data.get("total") or reported_total_count)
+            for job in data.get("list") or []:
+                row = normalize_bilibili_job(job)
+                deduped[row["position_id"]] = row
+            page_num += 1
+
+        rows = sorted(deduped.values(), key=lambda row: row["position_name"])
+        if reported_total_count and len(rows) != reported_total_count:
+            raise RuntimeError(
+                f"Bilibili position count mismatch: expected {reported_total_count}, got {len(rows)}"
+            )
+        return rows, reported_total_count or len(rows)
+    except Exception:
+        if not use_cached_firecrawl:
+            raise
+        path = firecrawl_dir / "bilibili-tech-intern.md"
+        if not path.exists():
+            raise
+        markdown = path.read_text(encoding="utf-8")
+        count = parse_bilibili_job_count(markdown)
+        return [], count
 
 
 def resolve_oppo_intern_project(session: requests.Session) -> dict[str, Any]:
@@ -444,8 +622,12 @@ def main() -> None:
         rows=bilibili_rows,
         generated_at=generated_at,
         reported_total_count=bilibili_count,
-        filters={"practiceTypes": [1], "type": 0},
-        note="Current Bilibili internship page reports zero open positions.",
+        filters={"code": "01", "practiceTypes": [1, 2], "type": 0},
+        note=(
+            "Structured export is sourced from the Bilibili campus position API under "
+            "code=01 + practiceTypes=1,2, using a browser-bootstrapped anti-bot session "
+            "captured on 2026-03-29."
+        ),
     )
 
     combined_rows = sorted(

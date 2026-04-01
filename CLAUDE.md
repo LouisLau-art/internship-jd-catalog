@@ -4,9 +4,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This repository is a personalized internship job description catalog and resume generation toolkit. It tracks campus internship opportunities from major tech companies (Alibaba, Ant Group, ByteDance, Meituan, JD, Tencent, Xiaohongshu, Huawei, Xiaomi, OceanBase) and automates the generation of highly targeted resumes tailored to specific roles.
+This repository is a personalized internship job description catalog and resume generation toolkit. It tracks campus internship opportunities from major tech companies (Alibaba, Ant Group, ByteDance, Meituan, JD, Tencent, Xiaohongshu, Huawei, Xiaomi, OceanBase, NetEase, Pinduoduo, Didi, Kuaishou, Honor, OPPO, Bilibili) and automates the generation of highly targeted resumes tailored to specific roles.
 
-**Current Snapshot:** `2026-03-21`
+**Current Snapshot:** `2026-03-29`
 
 **Evidence-Driven:** Fit notes and resume templates are based on actual project experience (ScholarFlow, multi-cloud-email-sender, multi-agent-skills-catalog), not fabricated claims.
 
@@ -33,6 +33,12 @@ python scripts/scrape_tencent_jobs.py
 
 # Scrape Xiaohongshu
 python scripts/scrape_xhs_jobs.py
+
+# Scrape extra bigtech (NetEase, Pinduoduo, Didi, Xiaomi)
+python scripts/scrape_extra_bigtech.py
+
+# Scrape more bigtech (Kuaishou, Honor, OPPO, Bilibili)
+python scripts/scrape_more_bigtech.py
 ```
 
 ### Resume Export
@@ -53,9 +59,22 @@ python scripts/export_resumes.py --skip-generators
 #       to be available in the working directory as configured in scripts.
 ```
 
-### Tests
+### Two-Stage Company Workflow
 ```bash
-python -m unittest discover tests
+# Stage 1: refresh raw exports for selected companies and write crawl status notes
+/campus-job-scrape
+
+# Equivalent script entrypoint
+python scripts/run_company_scrape.py --companies alibaba,antgroup,bytedance,meituan,jd,tencent,xiaohongshu,huawei,netease,pinduoduo,didi,xiaomi,kuaishou,honor,oppo,bilibili --refresh-mode cached
+
+# Stage 2: rank top roles, generate/reuse resumes, and sync the main notebook
+/job-fit-to-resume
+
+# Equivalent script entrypoint
+python scripts/run_job_fit_resume.py --companies alibaba,antgroup,bytedance,meituan,jd,tencent,xiaohongshu,huawei --top-n-per-company 3
+
+# Safe dry run: rank roles without generating PDFs or syncing the dashboard
+python scripts/run_job_fit_resume.py --companies alibaba,bytedance,xiaohongshu --top-n-per-company 3 --no-generate --no-sync-progress --output-doc docs/temp/YYYY-MM-DD-campus-core-dryrun-shortlist.md
 ```
 
 ### Sync Job Notifications
@@ -64,13 +83,15 @@ python -m unittest discover tests
 /sync-jobs
 ```
 
-### Audit Job Fit vs Resume Coverage
+### Legacy Resume Coverage Audit
 ```bash
-# Audit suitable roles against current resume assets and sync the dashboard
-/job-fit-to-resume
-
-# Equivalent script entrypoint
+# Use this when you only want coverage audit, not the full shortlist workflow
 python scripts/audit_resume_coverage.py --sync-doc docs/job-search-progress.md
+```
+
+### Tests
+```bash
+python -m unittest discover tests
 ```
 
 ## Recommended Workflow
@@ -78,21 +99,26 @@ python scripts/audit_resume_coverage.py --sync-doc docs/job-search-progress.md
 ### 1. Automation & Discovery
 - **Always** start configuration, automation, or plugin/MCP setup sessions by invoking the automation recommender first with `/automation-recommender` to leverage pre-built workflows and avoid redundant setup.
 
-### 1.5 Job Fit → Resume Coverage
-- Use **`/job-fit-to-resume`** before generating a new targeted resume.
-- The audit checks `docs/job-search-progress.md`, generator scripts under `resumes/scripts/`, and exported assets in `resumes/sources/`.
-- Treat the audit statuses as the decision gate:
-  - `generated`: reuse current PDF
-  - `generator_ready`: run the matched generator script
-  - `reusable`: adapt the closest existing same-company resume
-  - `missing`: create a new targeted version
+### 2. Company Scrape
+- Use **`/campus-job-scrape`** as the default stage-1 entrypoint for company shortlist work.
+- The orchestrator groups companies by scraper family (`campus_core`, `extra_bigtech`, `more_bigtech`) and writes only to `data/*.json|csv` and `docs/temp/*crawl-status.md`.
+- Keep the scope narrow here: no resume generation and no main notebook edits.
 
-### 2. AI-Native Resume Generation (The Deep Diver)
+### 3. Job Fit → Resume Coverage
+- Use **`/job-fit-to-resume`** after stage 1.
+- The orchestrator reads refreshed company exports, picks the top `N` roles per company, maps them to targeted resumes, optionally runs generator scripts, and syncs `docs/job-search-progress.md`.
+- Treat resume states as the decision gate:
+  - `existing_pdf`: current PDF is ready to use
+  - `generated_now`: a missing PDF was generated in this run
+  - `reused_template`: reuse the mapped same-company version
+  - `generation_failed`: investigate the matched generator before hand-editing
+
+### 4. AI-Native Resume Generation (The Deep Diver)
 - Use the **`/generate-resume`** pattern to extract high-leverage "AI-Native Engineering" evidence.
 - **MANDATORY**: Audit `.claude/handoffs/` for specific technical fixes (e.g., "Patched session-handoff validator", "Model switching strategy for 400 errors") to prove engineering depth.
 - **Pattern**: `Problem -> AI Constraint -> Engineering Solution`.
 
-### 3. Safety & Context Management
+### 5. Safety & Context Management
 - **Pre-flight Check**: ALWAYS run a glob/ls preview (e.g., `ls resumes/sources/*.pdf`) before any mass deletion or file organization.
 - **Context Preservation**: For context-heavy tasks, switch to **ModelScope/Kimi-K2.5** early if encountering context-length 400 errors with other models.
 - **Handoffs**: Use `session-handoff` to preserve state across long-running tasks.
@@ -105,11 +131,11 @@ Company Career Portals
     ↓
 [scrape_*.py] → raw JSON/CSV (data/)
     ↓
-[manual curation] → catalog.csv + docs/companies/*.md
+[run_company_scrape.py] → docs/temp/*crawl-status.md
     ↓
-[generate_*_resumes.py] → markdown templates (resumes/sources/)
+[run_job_fit_resume.py] → shortlist + progress sync
     ↓
-[export_resumes.py] → HTML → DOCX/PDF
+[generate_*_resumes.py] / [export_resumes.py] → HTML → DOCX/PDF
 ```
 
 ### Key Files
@@ -121,9 +147,19 @@ Company Career Portals
 | `data/campus_positions_combined.csv` | Union of all raw exports |
 | `docs/companies/*.md` | Structured notes per company |
 | `docs/*-top-*.md` | Prioritized shortlists |
-| `scripts/scrape_campus_jobs.py` | Main scraper for Alibaba/Ant/Huawei + combiner |
+| `scripts/scrape_campus_jobs.py` | Main scraper for Alibaba/Ant/Huawei + combined-export rebuild for ByteDance/Meituan/JD/Tencent/Xiaohongshu |
+| `scripts/scrape_extra_bigtech.py` | Scraper for NetEase/Pinduoduo/Didi/Xiaomi |
+| `scripts/scrape_more_bigtech.py` | Scraper for Kuaishou/Honor/OPPO/Bilibili |
+| `scripts/company_registry.py` | Company metadata and scrape-group routing |
+| `scripts/company_fit_profiles.py` | Per-company priority roles and resume mappings |
+| `scripts/run_company_scrape.py` | Stage-1 scrape orchestrator |
+| `scripts/run_job_fit_resume.py` | Stage-2 shortlist and resume orchestrator |
 | `scripts/export_resumes.py` | Unified resume export entrypoint |
+| `resumes/scripts/generate_unapplied_bigtech_resumes.py` | Resume generator for NetEase/Pinduoduo/Didi/Kuaishou/Honor/OPPO |
+| `resumes/scripts/generate_extra_bigtech_resumes.py` | Resume generator for Xiaomi |
 | `resumes/export_manifest.json` | Defines export jobs for `export_resumes.py` |
+| `.claude/skills/campus-job-scrape/SKILL.md` | Skill wrapper for stage-1 scrape orchestration |
+| `.claude/skills/job-fit-to-resume/SKILL.md` | Skill wrapper for stage-2 shortlist and resume sync |
 
 ### Fit Legend
 - `strong`: worth prioritizing
@@ -145,9 +181,12 @@ All CSV exports in `data/` share a consistent schema with columns: `source`, `co
 - **Data Management:** Raw data dumps from scrapers are intentionally kept in `data/` to avoid polluting the curated `catalog.csv` at the root. Data is exported in both `.csv` and `.json` formats.
 - **Gitignore:** Generated artifacts (`.pdf`, `.docx`, `.png`) and certain scripts (`scripts/export_resumes.py`, `tests/test_export_resumes.py`) are excluded from Git to keep the repository lightweight. The `resumes/` and `resume-refresh-*/` directories are also gitignored.
 - **Testing:** The project uses a standard Python `unittest` framework for testing scripts (located in `tests/`).
+- **Workflow Split:** Keep the three scrape families (`campus_core`, `extra_bigtech`, `more_bigtech`) in stage 1, then run shortlist/resume in stage 2. `job-sync` stays separate from both.
 
 ## Gotchas
 
 - Some files referenced in documentation (e.g., `scripts/export_resumes.py`, `resumes/export_manifest.json`) may be gitignored and not present in the working tree.
 - Personal resume sources and generated application materials are intentionally kept out of Git so that the repository can stay publishable.
 - The curated root `catalog.csv` is kept separate from raw `data/` exports to prevent large site dumps from polluting the reviewed shortlist.
+- `campus_core` companies do not always have dedicated per-company JSON exports. Stage 2 reads `data/campus_positions_combined.*` and filters rows by `source` through `scripts/company_registry.py`.
+- Companies are split into three scrape groups: `campus_core` (Alibaba, Ant Group, ByteDance, Meituan, JD, Tencent, Xiaohongshu, Huawei), `extra_bigtech` (NetEase, Pinduoduo, Didi, Xiaomi), and `more_bigtech` (Kuaishou, Honor, OPPO, Bilibili).
