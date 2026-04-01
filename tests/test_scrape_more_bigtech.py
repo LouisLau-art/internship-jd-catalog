@@ -6,9 +6,11 @@ from scripts.scrape_more_bigtech import (
     is_kuaishou_tech_job,
     is_oppo_tech_job,
     normalize_honor_job,
+    normalize_bilibili_job,
     normalize_kuaishou_job,
     normalize_oppo_job,
     parse_bilibili_job_count,
+    split_bilibili_position_description,
 )
 
 
@@ -147,6 +149,46 @@ class BilibiliTests(unittest.TestCase):
     def test_parse_bilibili_job_count_handles_zero_and_non_zero(self) -> None:
         self.assertEqual(parse_bilibili_job_count("### 职位列表 （0）"), 0)
         self.assertEqual(parse_bilibili_job_count("### 职位列表 （23）"), 23)
+
+    def test_split_bilibili_position_description_handles_html_markers(self) -> None:
+        description, requirement = split_bilibili_position_description(
+            "<strong>工作职责:</strong>\n负责 Agent 工作流开发\n<strong>工作要求:</strong>\n熟悉 Python / Go"
+        )
+
+        self.assertEqual(description, "负责 Agent 工作流开发")
+        self.assertEqual(requirement, "熟悉 Python / Go")
+
+    def test_normalize_bilibili_job_maps_core_fields(self) -> None:
+        row = normalize_bilibili_job(
+            {
+                "id": 27295,
+                "campusProjectId": 53,
+                "hotRecruit": 1,
+                "positionDescription": (
+                    "工作职责:\n参与视频 CDN 点直播流量调度研发\n"
+                    "工作要求:\n熟悉数据结构、操作系统、网络"
+                ),
+                "positionName": "视频CDN研发实习生【2027届】",
+                "positionTypeName": "实习",
+                "postCodeName": "技术类",
+                "pushTime": "2026-03-19 13:24:01",
+                "recruitType": 1,
+                "workLocation": "上海/北京",
+            }
+        )
+
+        self.assertEqual(row["source"], "bilibili")
+        self.assertEqual(row["company"], "Bilibili")
+        self.assertEqual(row["position_id"], "27295")
+        self.assertEqual(row["position_name"], "视频CDN研发实习生【2027届】")
+        self.assertEqual(row["position_url"], "https://jobs.bilibili.com/campus/positions/27295")
+        self.assertEqual(row["batch_name"], "实习生招聘")
+        self.assertEqual(row["category_name"], "技术类")
+        self.assertEqual(row["work_locations"], "上海 | 北京")
+        self.assertEqual(row["publish_time"], "2026-03-19 13:24:01")
+        self.assertEqual(row["description"], "参与视频 CDN 点直播流量调度研发")
+        self.assertEqual(row["requirement"], "熟悉数据结构、操作系统、网络")
+        self.assertEqual(row["feature_tags"], "热门职位 | campusProjectId=53")
 
 
 if __name__ == "__main__":

@@ -1,8 +1,8 @@
 {
-  "generated_at": "2026-03-27T04:02:15.630924+00:00",
+  "generated_at": "2026-03-27T18:20:50.617856+00:00",
   "source": "xiaomi",
   "company": "Xiaomi",
-  "total_count": 377,
+  "total_count": 376,
   "jobs": [
     {
       "source": "xiaomi",
@@ -287,20 +287,6 @@
     {
       "source": "xiaomi",
       "company": "Xiaomi",
-      "position_id": "7620253577613953321",
-      "position_name": "芯片硬件测试实习生",
-      "position_url": "https://xiaomi.jobs.f.mioffice.cn/internship/position/7620253577613953321/detail",
-      "batch_name": "校招 / 实习",
-      "category_name": "测试类",
-      "work_locations": "西安",
-      "feature_tags": "",
-      "publish_time": 1774228771153,
-      "description": "1、负责依据芯片功能、指标、协议标准、电路特性及应用场景等多个维度梳理相应的测试策略，制定符合要求的测试方案和测试用例，确保芯片测试完备性；\n2、负责基于芯片电路特性和测试方案，输出相应的芯片和EVB可测性设计需求，并统筹规划测试准备阶段工作； \n3、回片后根据测试计划对芯片进行Bring Up、功能、电气性能、可靠性、SI/PI和功耗等多方面硅后测试工作，解决验证时发现的问题。负责测试报告的撰写，对测试结果进行分析判断及测试问题的跟踪； \n4、测试过程中，分析测试数据，反馈测试发现的问题，组织或参与测试问题的分析、处理和解决，跟踪和推动问题的改善闭环；\n5、负责芯片端到端的测试交付和维护，协助量产测试和可靠性测试导入支持、协助产品问题定位支持等。 ",
-      "requirement": " 1、本科及以上学历，电子或者自动化相关专业背景；\n 2、电路分析，模电，数电等基础学科扎实；\n 3、熟悉以下一种或多种IP的基础原理和工作特性：\n  a)电源领域（buck，boost，LDO，charge pump等）；\n  b)信号链领域（SerDes、ADC、DAC、PLL等）；\n  c)接口协议（如DDR、PCIe、USB、MIPI等）；\n 4、能理解信号完整性和电源完整性理论的核心重点，如果能分析和解决信号完整性和电源完整性问题为加分项；\n 5、熟悉常见仪表（电源、万用表、示波器等）的使用方法，如果熟悉高速仪表（如高速示波器、误码仪、相噪仪、频谱仪等）为加分项；\n 6、如果具备测试自动化（如Python/Matlab/C#）脚本开发能力为加分项。"
-    },
-    {
-      "source": "xiaomi",
-      "company": "Xiaomi",
       "position_id": "7582476374779414834",
       "position_name": "试验室运营工程师实习生",
       "position_url": "https://xiaomi.jobs.f.mioffice.cn/internship/position/7582476374779414834/detail",
@@ -535,20 +521,6 @@
       "publish_time": 1742983480244,
       "description": "负责用户大数据的处理，生成用户画像\n负责动力零部件的大数据健康监控和分析\n负责动力零部件的大数据转化，生成加速试验工况\n负责测试数据的云端自动化分析",
       "requirement": " 1. 硕士学历；\n 2. 从事过车辆大数据相关工作优先；\n 3. 具备优秀的沟通能力，工作踏实，具有责任感和团队精神 ；\n 4. 具备可靠性相关知识，如可靠性工程，寿命数据分析，加速试验，车辆耐久性等\n 5. 具备数据分析能力，熟练使用Python。\n"
-    },
-    {
-      "source": "xiaomi",
-      "company": "Xiaomi",
-      "position_id": "7616940675376531755",
-      "position_name": "小米汽车-硬件-电池热管理实习生",
-      "position_url": "https://xiaomi.jobs.f.mioffice.cn/internship/position/7616940675376531755/detail",
-      "batch_name": "校招 / 实习",
-      "category_name": "硬件研发类",
-      "work_locations": "上海",
-      "feature_tags": "",
-      "publish_time": 1773457343017,
-      "description": "参与新能源汽车电池包热管理系统的三维仿真建模与优化工作，主要使用 STAR-CCM+ 进行流体与热耦合仿真分析。\n协助完成电池包在不同工况（如快充、高温、低温等）下的温度场、流场仿真，评估散热/加热性能并提出改进建议。\n配合团队完成仿真结果的后处理与分析，生成可视化报告（如温度分布、流速云图、压力降等）。\n参与简化仿真模型、优化网格划分策略，提升计算效率。\n",
-      "requirement": "学历专业：本科及以上学历，热能与动力工程、机械工程、车辆工程、流体力学、工程热物理等相关专业。\n技能要求：\n熟悉三维仿真流程，熟练应用 STAR-CCM+ 仿真软件；\n了解电池热管理基本原理（如液冷板设计、导热材料应用、电芯生热模型等）；\n掌握基础的热力学、流体力学知识（如传热系数、压降计算、湍流模型等）。\n能使用 CAD软件（如CATIA/UG） 进行简单模型修复或几何处理者优先。"
     },
     {
       "source": "xiaomi",
@@ -843,6 +815,20 @@
       "publish_time": 1759045022498,
       "description": "1.参与车载电子控制器的硬件测试、验证工作；\n2.协助进行整车/系统问题复现和压测。\n",
       "requirement": "1.大学本科及以上学历，电气工程，自动化，机电一体化，车辆工程，电子、通信、计算机等相关专业；\n2.熟悉数电、模电、嵌入式开发基本原理；\n3.参与过电子设计竞赛、学校/企业项目经验优先；\n4.具有良好的沟通能力和团队合作精神。"
+    },
+    {
+      "source": "xiaomi",
+      "company": "Xiaomi",
+      "position_id": "7621438502186273074",
+      "position_name": "项目经理实习生",
+      "position_url": "https://xiaomi.jobs.f.mioffice.cn/internship/position/7621438502186273074/detail",
+      "batch_name": "校招 / 实习",
+      "category_name": "硬件研发类",
+      "work_locations": "武汉",
+      "feature_tags": "",
+      "publish_time": 1774504683203,
+      "description": "1. 负责料号、BOM的创建、上传、维护,变更及发布； \n2. BOM变更管理：发起并组织评审ECN以及发布归档，确保变更合理性； \n3. 物料规格书、项目开发过程文档及技术资料的归档； \n4. 代工厂ERP报账数据核对； \n5. 项目文控体系的搭建及维护；",
+      "requirement": "本科及以上学历，电子/电气/通信/机械相关专业背景优先；"
     },
     {
       "source": "xiaomi",

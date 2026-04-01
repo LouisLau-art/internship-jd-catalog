@@ -104,7 +104,7 @@ The project maintains a clean separation between:
 
 ### Important Context
 
-- **QQ Email Authorization Code**: `icrrzlywvwmnjeda` was successfully used to log in via IMAP - keep this in mind but DON'T commit to Git!
+- **QQ Email Authorization Code**: (redacted - user keeps this locally) was successfully used to log in via IMAP - keep this in mind but DON'T commit to Git!
 - **Recent Interview**: User just completed a Meituan technical interview for "基础技术-AI Coding项目实习生" on the morning of 2026-03-26
 - **Job Search Notebook**: `docs/job-search-progress.md` is the central tracking document now
 - **Email Parser Issue**: The parser logs in successfully, but `mail.search()` fails because IMAP doesn't support Chinese search terms; fix by fetching recent N emails first and filtering locally
@@ -126,7 +126,7 @@ The project maintains a clean separation between:
 
 - Python `imaplib` for QQ email access
 - QQ email IMAP server `imap.qq.com:993`
-- User's QQ email: `1397951685@qq.com` (authorization code provided)
+- User's QQ email: (redacted - local configuration only)
 
 ### Active Processes
 
@@ -146,4 +146,4 @@ The project maintains a clean separation between:
 
 ---
 
-**Security Reminder**: Authorization code `icrrzlywvwmnjeda` was used in testing - DO NOT commit to Git!
+**Security Reminder**: Authorization code was used in local testing and has been redacted here - DO NOT commit real credentials to Git!
