@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 This repository is a personalized internship job description catalog and resume generation toolkit. It tracks campus internship opportunities from major tech companies (Alibaba, Ant Group, ByteDance, Meituan, JD, Tencent, Xiaohongshu, Huawei, Xiaomi, OceanBase, NetEase, Pinduoduo, Didi, Kuaishou, Honor, OPPO, Bilibili) and automates the generation of highly targeted resumes tailored to specific roles.
 
-**Current Snapshot:** `2026-03-29`
+**Workflow Snapshot:** `main` currently includes the two-stage company workflow (`campus-job-scrape` -> `job-fit-to-resume` -> `job-sync`), validated handoffs, and local study-note tracking.
 
 **Evidence-Driven:** Fit notes and resume templates are based on actual project experience (ScholarFlow, multi-cloud-email-sender, multi-agent-skills-catalog), not fabricated claims.
 
@@ -97,7 +97,8 @@ python -m unittest discover tests
 ## Recommended Workflow
 
 ### 1. Automation & Discovery
-- **Always** start configuration, automation, or plugin/MCP setup sessions by invoking the automation recommender first with `/automation-recommender` to leverage pre-built workflows and avoid redundant setup.
+- Prefer repo-local skills first: `/campus-job-scrape`, `/job-fit-to-resume`, `/sync-jobs`.
+- Treat `/automation-recommender` as optional/global only; do not assume this repo provides it.
 
 ### 2. Company Scrape
 - Use **`/campus-job-scrape`** as the default stage-1 entrypoint for company shortlist work.
@@ -114,7 +115,7 @@ python -m unittest discover tests
   - `generation_failed`: investigate the matched generator before hand-editing
 
 ### 4. AI-Native Resume Generation (The Deep Diver)
-- Use the **`/generate-resume`** pattern to extract high-leverage "AI-Native Engineering" evidence.
+- There is no repo-local `/generate-resume` slash command. For deep resume rewriting, use `resumes/scripts/ai-native-resume-generation/SKILL.md` or the concrete `generate_*_resumes.py` scripts.
 - **MANDATORY**: Audit `.claude/handoffs/` for specific technical fixes (e.g., "Patched session-handoff validator", "Model switching strategy for 400 errors") to prove engineering depth.
 - **Pattern**: `Problem -> AI Constraint -> Engineering Solution`.
 
@@ -175,6 +176,13 @@ All CSV exports in `data/` share a consistent schema with columns: `source`, `co
 - `pandoc` - for markdown → DOCX conversion
 - `google-chrome` / `google-chrome-stable` - for HTML → PDF conversion (headless mode)
 
+## Environment Prerequisites
+
+- Python environment should include at least `requests`.
+- Live ByteDance / Bilibili scraping may require Playwright plus `playwright install chromium`.
+- `/sync-jobs` requires a local `.env` with `QQ_EMAIL` and `QQ_AUTH_CODE`.
+- Resume export depends on `pandoc`, Chrome, and usually a configured profile photo path (for example via `RESUME_PHOTO` or the script defaults).
+
 ## Development Conventions
 
 - **Code Style:** Python scripts use type hinting (`from __future__ import annotations`, `typing`) and follow structured data normalization patterns.
@@ -182,6 +190,12 @@ All CSV exports in `data/` share a consistent schema with columns: `source`, `co
 - **Gitignore:** Generated artifacts (`.pdf`, `.docx`, `.png`) and certain scripts (`scripts/export_resumes.py`, `tests/test_export_resumes.py`) are excluded from Git to keep the repository lightweight. The `resumes/` and `resume-refresh-*/` directories are also gitignored.
 - **Testing:** The project uses a standard Python `unittest` framework for testing scripts (located in `tests/`).
 - **Workflow Split:** Keep the three scrape families (`campus_core`, `extra_bigtech`, `more_bigtech`) in stage 1, then run shortlist/resume in stage 2. `job-sync` stays separate from both.
+
+## Tracking Boundaries
+
+- `data/*.json|csv` are tracked raw exports and should be treated as the durable source of truth for refreshed company data.
+- `.firecrawl/`, `docs/temp/`, `.claude/temp/`, and `.tmp/` are generated working artifacts and are intentionally untracked.
+- When a workflow writes temp shortlist or crawl-status docs, treat them as disposable run outputs unless there is an explicit reason to promote them.
 
 ## Troubleshooting & Common Issues
 
