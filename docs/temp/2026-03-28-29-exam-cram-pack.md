@@ -46,6 +46,50 @@
 
 ## 题型判断
 
+## 方向校正
+
+### 之前找到的阿里真题，是否就是这个方向？
+
+- 不是严格意义上的“`AI应用研发工程师` 定向真题”。
+- 之前的主真题源 [DerekLin924/bat_code 阿里笔试](https://github.com/DerekLin924/bat_code/blob/83adffda48ad1dd5edae4f7b00acd49423805589/%E9%98%BF%E9%87%8C%E7%AC%94%E8%AF%95/alibaba.md) 里，主要是：
+  - 阿里云笔试 0910
+  - 阿里云研发岗 0917
+  - 阿里云算法岗 0917
+  - 淘天 / 达摩院 / 国际业务等场次
+- 也就是说，这批题更像“阿里技术岗通用研发笔试题池”，不是 GitHub 上明确标注 `AI应用研发工程师` 的专门卷。
+
+### 但你的岗位也不是纯算法岗
+
+- 结合仓库本地 JD，`AI应用研发工程师` 的要求明显偏 `AI应用开发 / Agent工程落地`，不是纯大模型训练或纯算法研究：
+  - 要求重度使用 `Cursor`、`Claude Code`
+  - 强调 `Prompt Engineering`、`Context Engineering`
+  - 强调 `Agent`、`工具/函数调用`
+  - 提到 `LangChain`
+  - 明确要求考虑 `幻觉`、`Prompt 注入` 的工程化应对
+  - 加分项直接写了 `RAG`、`多智能体`、`MCP`、`Skill`
+- 仓库里的 `AI应用开发工程师实习生` 也明确写了：
+  - `Agent系统`
+  - `LangChain / LlamaIndex`
+  - `Prompt`
+  - `RAG`
+  - `知识图谱`
+  - `效果评估`
+
+### 当前最合理的准备比例
+
+- `60%`：阿里通用研发笔试基础
+  - 算法
+  - 数据结构
+  - 计算机网络
+  - 操作系统
+  - 常见后端基础
+- `40%`：AI应用 / Agent 方向补充
+  - Prompt / Context Engineering
+  - RAG 基本链路
+  - Tool Calling / Function Calling
+  - Agent / Multi-Agent
+  - 幻觉 / Prompt 注入 / 评测 / 兜底
+
 ### 阿里 / 蚂蚁
 
 - 高概率不是纯算法卷，至少会混入后端基础。
@@ -68,6 +112,34 @@
   - 赛码风格基础编程题：数组、字符串、哈希、栈、队列、滑窗、基础 DP
   - JS / 浏览器 / 网络 / 工程化 / 测试基础
   - 120 分钟内做题节奏，而不是单题深挖
+
+## AI 应用方向补充 GitHub 源
+
+### 这些不是阿里定向真题，但更贴近你的岗位要求
+
+- [adongwanai/AgentGuide](https://github.com/adongwanai/AgentGuide)
+  - 明确把岗位拆成 `算法工程师线` 和 `开发工程师线`
+  - 直接覆盖 `LangChain`、`LangGraph`、`RAG`、`Multi-Agent`、`Memory`、`系统设计`、`面试题库`
+- [wdndev/llm_interview_note](https://github.com/wdndev/llm_interview_note)
+  - 主题就是 `LLMs 算法（应用）工程师相关知识及面试题`
+- [WeThinkIn/AIGC-Interview-Book](https://github.com/WeThinkIn/AIGC-Interview-Book)
+  - 覆盖 `AIGC`、`AI Agent`、机器学习、NLP、强化学习与大厂高频算法题
+- [liguodongiot/llm-action](https://github.com/liguodongiot/llm-action)
+  - 偏 `大模型工程化 / 应用落地`
+  - 仓库里明确有 `大模型应用常见面试题`
+- [liyupi/ai-code-helper](https://github.com/liyupi/ai-code-helper)
+  - 不是真题库，但项目栈非常像 `AI应用研发`
+  - 覆盖 `Prompt`、`RAG`、`向量数据库`、`Tool Calling`、`MCP`
+
+### 怎么用这些补方向
+
+- 不要把这些仓库当成“刷完整教程”。
+- 只用来补 5 类最可能被问到的方向词：
+  - `Prompt`
+  - `RAG`
+  - `Agent`
+  - `Tool Calling`
+  - `MCP / Memory / 评测`
 
 ## 冲刺顺序
 

@@ -1,6 +1,6 @@
 # 额外大厂技术实习抓取状态
 
-更新时间：`2026-03-27`
+更新时间：`2026-03-28`
 
 ## 本轮已正式落库
 
@@ -10,6 +10,12 @@
 | 荣耀 | `https://career.honor.com/SU61b9b9992f9d24431f5050a5/pb/interns.html` | 研发类实习 `18` 个 | [honor_positions_intern_tech.json](/home/louis/internship-jd-catalog/data/honor_positions_intern_tech.json) |
 | OPPO | `https://careers.oppo.com/university/oppo/campus/post?recruitType=Intern` | 技术类实习 `74` 个 | [oppo_positions_intern_tech.json](/home/louis/internship-jd-catalog/data/oppo_positions_intern_tech.json) |
 | 哔哩哔哩 | `https://jobs.bilibili.com/campus/positions?practiceTypes=1&type=0` | 当前实习页 `0` 个 | [bilibili_positions_intern_tech.json](/home/louis/internship-jd-catalog/data/bilibili_positions_intern_tech.json) |
+
+同日也刷新了另一组未投公司数据：
+- 网易：`63`
+- 拼多多：`6`
+- 滴滴：`75`
+- 小米：`376`
 
 汇总导出：
 - [more_bigtech_positions.json](/home/louis/internship-jd-catalog/data/more_bigtech_positions.json)

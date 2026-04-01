@@ -6,3 +6,8 @@ resume-refresh-*/
 scripts/export_resumes.py
 tests/test_export_resumes.py
 .env
+.firecrawl/
+.claude/temp/
+docs/temp/
+.tmp/
+*.png
